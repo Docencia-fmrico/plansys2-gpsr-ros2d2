@@ -1,0 +1,10 @@
+move:
+  ros__parameters:
+    plugins:
+      - ros2d2_move_bt_node
+    waypoints: ["kitchen", "living_room", "bedroom", "bathroom"]
+    waypoint_coords:
+      kitchen: [0.0, 0.0]
+      living_room: [0.0, 0.0]
+      bedroom: [0.0, 0.0]
+      bathroom: [2.0, 0.0]
