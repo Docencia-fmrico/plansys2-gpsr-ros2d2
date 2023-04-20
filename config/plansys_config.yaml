@@ -7,4 +7,4 @@ move:
       kitchen: [0.0, 0.0]
       living_room: [0.0, 0.0]
       bedroom: [0.0, 0.0]
-      bathroom: [2.0, 0.0]
+      bathroom: [0.0, 1.0]
