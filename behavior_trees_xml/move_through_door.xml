@@ -1,0 +1,7 @@
+<root main_tree_to_execute = "MainTree" >
+    <BehaviorTree ID="MainTree">
+       <Sequence name="root_sequence">
+           <MoveThroughDoor    name="move_through_door" goal="${arg2}" door="${arg3}"/>
+       </Sequence>
+    </BehaviorTree>
+</root>

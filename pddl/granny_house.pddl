@@ -7,6 +7,7 @@ robot
 room predoor - location
 door
 object
+person
 );; end Types ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Predicates ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -28,9 +29,9 @@ object
 (human_request_closedoor ?d - door)
 (human_request_object ?p - person ?o - object)
 
-(no_object_request)
-(no_open_door_request)
-(no_close_door_request)
+(no_object_request ?r - robot)
+(no_open_door_request ?r - robot )
+(no_close_door_request ?r - robot)
 );; end Predicates ;;;;;;;;;;;;;;;;;;;;
 
 ;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -39,8 +40,9 @@ object
 );; end Functions ;;;;;;;;;;;;;;;;;;;;
 
 ;; Actions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(:action move_through_door
+(:durative-action move_through_door
     :parameters (?r - robot ?z1 ?z2 - predoor ?d - door)
+    :duration (= ?duration 5)
     :precondition (and
         (robot_at ?r ?z1)
         (robot_available ?r)
@@ -55,8 +57,9 @@ object
     )
 )
 
-(:action move
+(:durative-action move
     :parameters (?r - robot ?z1 ?z2 - location)
+    :duration (= ?duration 5)
     :precondition (and
         (robot_at ?r ?z1)
         (robot_available ?r)
@@ -99,7 +102,7 @@ object
   :effect 
     (and 
       (at end (not (human_request_opendoor ?d)))
-      (at end (no_open_door_request))
+      (at end (no_open_door_request ?r))
     )
 )
 
@@ -132,7 +135,7 @@ object
   :effect 
     (and 
       (at end (not (human_request_closedoor ?d)))
-      (at end (no_close_door_request))
+      (at end (no_close_door_request ?r))
     )
 )
 
@@ -178,7 +181,7 @@ object
     )
   :effect 
     (and 
-      (at end (no_object_request))
+      (at end (no_object_request ?r))
       (at end (not (human_request_object ?p ?o)))
     )
 )
@@ -188,9 +191,9 @@ object
   :duration (= ?duration 50)
   :condition 
     (and 
-      (at start (no_object_request))
-      (at start (no_close_door_request))
-      (at start (no_open_door_request))
+      (at start (no_object_request ?r))
+      (at start (no_close_door_request ?r))
+      (at start (no_open_door_request ?r))
       (at start (object_at ?o ?l))
       (at start (robot_at ?r ?l))
     )

@@ -40,6 +40,8 @@ include_directories(include)
 
 add_library(ros2d2_move_bt_node SHARED src/behavior_tree_nodes/Move.cpp)
 list(APPEND plugin_libs ros2d2_move_bt_node)
+add_library(ros2d2_move_through_door_bt_node SHARED src/behavior_tree_nodes/MoveThroughDoor.cpp)
+list(APPEND plugin_libs ros2d2_move_through_door_bt_node)
 
 foreach(bt_plugin ${plugin_libs})
   ament_target_dependencies(${bt_plugin} ${dependencies})

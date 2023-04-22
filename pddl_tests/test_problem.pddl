@@ -51,21 +51,15 @@
   (door_open D3)
 
   ; Human orders
-  (human_request_object granny towel)
-  (human_request_closedoor D3)
-  (human_request_opendoor D1)
 
   ; Active type of orders from the human
-  (not(no_object_request))
-  (not(no_open_door_request))
-  (not(no_close_door_request))
+  (no_object_request r2d2)
+  (no_open_door_request r2d2)
+  (no_close_door_request r2d2)
 )
 
 (:goal (and
-    (no_object_request)
-    (no_open_door_request)
-    (no_close_door_request)
-    (arranged_object dish livingroom)
+    (robot_at r2d2 kitchen)
   )
 )
 

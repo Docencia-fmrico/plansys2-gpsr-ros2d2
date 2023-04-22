@@ -59,6 +59,20 @@ def generate_launch_description():
           }
         ])
 
+    move_through_door_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='move_through_door',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'move_through_door',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/move_through_door.xml'
+          }
+        ])
+
     ld = LaunchDescription()
 
     ld.add_action(declare_namespace_cmd)
@@ -66,7 +80,8 @@ def generate_launch_description():
     # Declare the launch options
     ld.add_action(plansys2_cmd)
 
-    # Declare the launch options
+    # Declare the BT plansys2 actions
     ld.add_action(move_cmd)
+    ld.add_action(move_through_door_cmd)
 
     return ld

@@ -17,7 +17,7 @@
 #include <vector>
 #include <memory>
 
-#include "behavior_tree_nodes/Move.hpp"
+#include "behavior_tree_nodes/MoveThroughDoor.hpp"
 
 #include "geometry_msgs/msg/pose2_d.hpp"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
@@ -29,7 +29,7 @@
 namespace plansys2_gpsr_ros2d2
 {
 
-Move::Move(
+MoveThroughDoor::MoveThroughDoor(
   const std::string & xml_tag_name,
   const std::string & action_name,
   const BT::NodeConfiguration & conf)
@@ -75,7 +75,7 @@ Move::Move(
 }
 
 BT::NodeStatus
-Move::on_tick()
+MoveThroughDoor::on_tick()
 {
   if (status() == BT::NodeStatus::IDLE) {
     rclcpp_lifecycle::LifecycleNode::SharedPtr node;
@@ -83,6 +83,8 @@ Move::on_tick()
 
     std::string goal;
     getInput<std::string>("goal", goal);
+    std::string door;
+    getInput<std::string>("door", door);
 
     geometry_msgs::msg::Pose2D pose2nav;
     if (waypoints_.find(goal) != waypoints_.end()) {
@@ -102,14 +104,14 @@ Move::on_tick()
 
     goal_.pose = goal_pos;
 
-    std::cout << "Executing move to " << goal << std::endl;
+    std::cout << "Moving to " << goal << " through " << door << std::endl;
   }
 
   return BT::NodeStatus::RUNNING;
 }
 
 BT::NodeStatus
-Move::on_success()
+MoveThroughDoor::on_success()
 {
   return BT::NodeStatus::SUCCESS;
 }
@@ -123,10 +125,10 @@ BT_REGISTER_NODES(factory)
   BT::NodeBuilder builder =
     [](const std::string & name, const BT::NodeConfiguration & config)
     {
-      return std::make_unique<plansys2_gpsr_ros2d2::Move>(
+      return std::make_unique<plansys2_gpsr_ros2d2::MoveThroughDoor>(
         name, "navigate_to_pose", config);
     };
 
-  factory.registerBuilder<plansys2_gpsr_ros2d2::Move>(
-    "Move", builder);
+  factory.registerBuilder<plansys2_gpsr_ros2d2::MoveThroughDoor>(
+    "MoveThroughDoor", builder);
 }
