@@ -72,6 +72,8 @@ Move::Move(
       }
     }
   }
+
+  std::cout << "Move initialized" << std::endl;
 }
 
 BT::NodeStatus
