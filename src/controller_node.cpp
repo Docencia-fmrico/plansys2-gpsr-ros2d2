@@ -130,7 +130,7 @@ public:
     problem_expert_->addPredicate(plansys2::Predicate("(next_to_door d3_bath d3)"));
 
     // doors status
-    problem_expert_->addPredicate(plansys2::Predicate("(door_open d1)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(door_closed d1)"));
     problem_expert_->addPredicate(plansys2::Predicate("(door_closed d2)"));
     problem_expert_->addPredicate(plansys2::Predicate("(door_closed d3)"));
 

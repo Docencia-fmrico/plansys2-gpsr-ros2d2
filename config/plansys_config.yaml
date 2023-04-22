@@ -26,3 +26,7 @@ move_through_door:
       d2_lr: [0.0, 0.0]
       d3_br: [0.0, 0.0]
       d3_bath: [0.0, 0.0]
+open_door:
+  ros__parameters:
+    plugins:
+      - ros2d2_open_door_bt_node
