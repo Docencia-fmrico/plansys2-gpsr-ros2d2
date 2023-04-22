@@ -124,7 +124,7 @@ BT_REGISTER_NODES(factory)
     [](const std::string & name, const BT::NodeConfiguration & config)
     {
       return std::make_unique<plansys2_gpsr_ros2d2::Move>(
-        name, "navigate_to_pose", config);
+        name, "Move", config);
     };
 
   factory.registerBuilder<plansys2_gpsr_ros2d2::Move>(

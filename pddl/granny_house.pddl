@@ -43,33 +43,36 @@ person
 (:durative-action move_through_door
     :parameters (?r - robot ?z1 ?z2 - predoor ?d - door)
     :duration (= ?duration 5)
-    :precondition (and
-        (robot_at ?r ?z1)
-        (robot_available ?r)
-        (door_connection ?d ?z1 ?z2)
-        (door_open ?d)
-    )
+    :condition 
+        (and
+          (at start(robot_at ?r ?z1))
+          (at start(robot_available ?r))
+          (at start(door_connection ?d ?z1 ?z2))
+          (at start(door_open ?d))
+        )
     :effect (and
-        (not (robot_at ?r ?z1))
-        (robot_at ?r ?z2)
-        (not (robot_available ?r))
-        (robot_available ?r)
+        (at start(not (robot_at ?r ?z1)))
+        (at end(robot_at ?r ?z2))
+        (at start(not (robot_available ?r)))
+        (at end(robot_available ?r))
     )
 )
 
 (:durative-action move
-    :parameters (?r - robot ?z1 ?z2 - location)
-    :duration (= ?duration 5)
-    :precondition (and
-        (robot_at ?r ?z1)
-        (robot_available ?r)
-        (connected ?z1 ?z2)
-    )
-    :effect (and
-        (not (robot_at ?r ?z1))
-        (robot_at ?r ?z2)
-        (not (robot_available ?r))
-        (robot_available ?r)
+  :parameters (?r - robot ?z1 ?z2 - location)
+  :duration (= ?duration 5)
+  :condition 
+      (and 
+        (at start(robot_at ?r ?z1))
+        (at start(robot_available ?r))
+        (at start(connected ?z1 ?z2))
+      )
+  :effect 
+    (and 
+      (at start(not (robot_at ?r ?z1)))
+      (at end(robot_at ?r ?z2))
+      (at start(not (robot_available ?r)))
+      (at end(robot_available ?r))
     )
 )
 
