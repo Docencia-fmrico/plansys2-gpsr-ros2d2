@@ -38,20 +38,17 @@ Move::Move(
   rclcpp_lifecycle::LifecycleNode::SharedPtr node;
   config().blackboard->get("node", node);
 
-  // Get waypoints
   try {
     node->declare_parameter<std::vector<std::string>>("waypoints");
   } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException & e) {
     // Do nothing;
   }
 
-  // Get waypoint coordinates
   if (node->has_parameter("waypoints")) {
-
     std::vector<std::string> wp_names;
+
     node->get_parameter_or("waypoints", wp_names, {});
 
-    // Get waypoint coordinates
     for (auto & wp : wp_names) {
       try {
         node->declare_parameter<std::vector<double>>("waypoint_coords." + wp);
@@ -72,8 +69,6 @@ Move::Move(
       }
     }
   }
-
-  std::cout << "Move initialized" << std::endl;
 }
 
 BT::NodeStatus
@@ -126,7 +121,7 @@ BT_REGISTER_NODES(factory)
     [](const std::string & name, const BT::NodeConfiguration & config)
     {
       return std::make_unique<plansys2_gpsr_ros2d2::Move>(
-        name, "Move", config);
+        name, "navigate_to_pose", config);
     };
 
   factory.registerBuilder<plansys2_gpsr_ros2d2::Move>(

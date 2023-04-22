@@ -42,7 +42,7 @@ person
 ;; Actions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (:durative-action move_through_door
     :parameters (?r - robot ?z1 ?z2 - predoor ?d - door)
-    :duration (= ?duration 5)
+    :duration (= ?duration 50)
     :condition 
         (and
           (at start(robot_at ?r ?z1))
@@ -60,7 +60,7 @@ person
 
 (:durative-action move
   :parameters (?r - robot ?z1 ?z2 - location)
-  :duration (= ?duration 5)
+  :duration (= ?duration 50)
   :condition 
       (and 
         (at start(robot_at ?r ?z1))
