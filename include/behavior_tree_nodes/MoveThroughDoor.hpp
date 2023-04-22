@@ -43,7 +43,8 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
-      BT::InputPort<std::string>("goal")
+      BT::InputPort<std::string>("goal"),
+      BT::InputPort<std::string>("door")
     };
   }
 

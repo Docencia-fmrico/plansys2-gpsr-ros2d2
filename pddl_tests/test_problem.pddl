@@ -11,7 +11,7 @@
 )
 
 (:init
-  (robot_at r2d2 livingroom)
+  (robot_at r2d2 D1_lr)
   (robot_available r2d2)
   (person_at granny kitchen)
 
@@ -59,7 +59,7 @@
 )
 
 (:goal (and
-    (robot_at r2d2 kitchen)
+    (robot_at r2d2 D1_k)
   )
 )
 

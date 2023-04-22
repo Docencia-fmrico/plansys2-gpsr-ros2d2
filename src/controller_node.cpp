@@ -94,7 +94,7 @@ public:
     problem_expert_->addInstance(plansys2::Instance{"glass", "object"});
 
     // General knowledge
-    problem_expert_->addPredicate(plansys2::Predicate("(robot_at r2d2 living_room)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(robot_at r2d2 d1_k)"));
     problem_expert_->addPredicate(plansys2::Predicate("(robot_available r2d2)"));
     problem_expert_->addPredicate(plansys2::Predicate("(person_at granny kitchen)"));
 
@@ -142,7 +142,7 @@ public:
     problem_expert_->addPredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
 
     // Goal: robot at bathroom
-    problem_expert_->setGoal(plansys2::Goal("(and (robot_at r2d2 kitchen))"));
+    problem_expert_->setGoal(plansys2::Goal("(and (robot_at r2d2 d1_lr))"));
   }
 
   void step()
