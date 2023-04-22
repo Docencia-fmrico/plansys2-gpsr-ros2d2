@@ -156,6 +156,15 @@ public:
         RCLCPP_ERROR(get_logger(), "Plan finished with error");
       }
     }
+    else {
+      auto feedback = executor_client_->getFeedBack();
+
+      for (const auto & action_feedback : feedback.action_execution_status) {
+        std::cout << "[" << action_feedback.action << " " <<
+          action_feedback.completion * 100.0 << "%]";
+      }
+      std::cout << std::endl;
+    }
   }
 
 private:
