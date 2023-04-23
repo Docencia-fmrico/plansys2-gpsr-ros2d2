@@ -30,3 +30,15 @@ open_door:
   ros__parameters:
     plugins:
       - ros2d2_open_door_bt_node
+close_door:
+  ros__parameters:
+    plugins:
+      - ros2d2_close_door_bt_node
+drop:
+  ros__parameters:
+    plugins:
+      - ros2d2_drop_bt_node
+pick:
+  ros__parameters:
+    plugins:
+      - ros2d2_pick_bt_node

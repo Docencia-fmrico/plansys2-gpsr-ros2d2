@@ -86,6 +86,48 @@ def generate_launch_description():
             'bt_xml_file': project_dir + '/behavior_trees_xml/open_door.xml'
           }
         ])
+    
+    close_door_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='close_door',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'close_door',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/close_door.xml'
+          }
+        ])
+
+    pick_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='pick',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'pick',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/pick.xml'
+          }
+        ])
+    
+    drop_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='drop',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'drop',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/drop.xml'
+          }
+        ])
 
     ld = LaunchDescription()
 
@@ -98,5 +140,8 @@ def generate_launch_description():
     ld.add_action(move_cmd)
     ld.add_action(move_through_door_cmd)
     ld.add_action(open_door_cmd)
+    ld.add_action(close_door_cmd)
+    ld.add_action(pick_cmd)
+    ld.add_action(drop_cmd)
 
     return ld

@@ -1,4 +1,4 @@
-(define (domain granny_house)
+(define (domain test_domain)
 (:requirements :strips :typing :adl :fluents :durative-actions)
 
 ;; Types ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -42,7 +42,7 @@ person
 ;; Actions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (:durative-action move_through_door
     :parameters (?r - robot ?z1 ?z2 - predoor ?d - door)
-    :duration (= ?duration 50)
+    :duration (= ?duration 5)
     :condition 
         (and
           (at start(robot_at ?r ?z1))
@@ -60,7 +60,7 @@ person
 
 (:durative-action move
   :parameters (?r - robot ?z1 ?z2 - location)
-  :duration (= ?duration 50)
+  :duration (= ?duration 5)
   :condition 
       (and 
         (at start(robot_at ?r ?z1))
