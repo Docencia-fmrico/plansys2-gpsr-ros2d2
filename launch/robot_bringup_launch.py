@@ -35,7 +35,7 @@ def generate_launch_description():
         default=os.path.join(
             get_package_share_directory('plansys2_gpsr_ros2d2'),
             'map',
-            'house.yaml'))
+            'big_house.yaml'))
 
     param_file_name = "burger_config.yaml"
     param_dir = LaunchConfiguration(
