@@ -8,7 +8,7 @@
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONdITIONS OF ANY KINd, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
@@ -66,19 +66,83 @@ public:
     // Init the robot
     problem_expert_->addInstance(plansys2::Instance{"r2d2", "robot"});
 
+    // Init the people
+    problem_expert_->addInstance(plansys2::Instance{"granny", "person"});
+
     // Init the rooms
     problem_expert_->addInstance(plansys2::Instance{"kitchen", "room"});
     problem_expert_->addInstance(plansys2::Instance{"living_room", "room"});
     problem_expert_->addInstance(plansys2::Instance{"bathroom", "room"});
     problem_expert_->addInstance(plansys2::Instance{"bedroom", "room"});  
 
-    // Initial knowledge
+    // Init the doors
+    problem_expert_->addInstance(plansys2::Instance{"d1", "door"});
+    problem_expert_->addInstance(plansys2::Instance{"d2", "door"});
+    problem_expert_->addInstance(plansys2::Instance{"d3", "door"});
+
+    // Init the pre-doors
+    problem_expert_->addInstance(plansys2::Instance{"d1_k", "predoor"});
+    problem_expert_->addInstance(plansys2::Instance{"d1_lr", "predoor"});
+    problem_expert_->addInstance(plansys2::Instance{"d2_br", "predoor"});
+    problem_expert_->addInstance(plansys2::Instance{"d2_lr", "predoor"});
+    problem_expert_->addInstance(plansys2::Instance{"d3_br", "predoor"});
+    problem_expert_->addInstance(plansys2::Instance{"d3_bath", "predoor"});
+
+    // Init the objects
+    problem_expert_->addInstance(plansys2::Instance{"towel", "object"});
+    problem_expert_->addInstance(plansys2::Instance{"dish", "object"});
+    problem_expert_->addInstance(plansys2::Instance{"glass", "object"});
+
+    // General knowledge
     problem_expert_->addPredicate(plansys2::Predicate("(robot_at r2d2 living_room)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(battery_full r2d2)"));
     problem_expert_->addPredicate(plansys2::Predicate("(robot_available r2d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(person_at granny kitchen)"));
+
+    // Objects status
+    problem_expert_->addPredicate(plansys2::Predicate("(object_at towel living_room)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(object_at dish bathroom)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(object_at glass bedroom)"));
+
+    // Connections 
+    problem_expert_->addPredicate(plansys2::Predicate("(connected kitchen d1_k)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(connected d1_k kitchen)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(connected living_room d1_lr)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(connected d1_lr living_room)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(door_connection d1 d1_k d1_lr)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(door_connection d1 d1_lr d1_k)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(next_to_door d1_k d1)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(next_to_door d1_lr d1)"));
+
+    problem_expert_->addPredicate(plansys2::Predicate("(connected bedroom d2_br)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(connected d2_br bedroom)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(connected living_room d2_lr)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(connected d2_lr living_room)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(door_connection d2 d2_br d2_lr)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(door_connection d2 d2_lr d2_br)"));
+
+    problem_expert_->addPredicate(plansys2::Predicate("(connected bedroom d3_br)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(connected d3_br bedroom)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(connected bathroom d3_bath)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(connected d3_bath bathroom)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(door_connection d3 d3_br d3_bath)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(door_connection d3 d3_bath d3_br)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(next_to_door d3_br d3)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(next_to_door d3_bath d3)"));
+
+    // doors status
+    problem_expert_->addPredicate(plansys2::Predicate("(door_open d1)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(door_closed d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(door_closed d3)"));
+
+    // Human orders
+
+    // Order control predicates
+    problem_expert_->addPredicate(plansys2::Predicate("(no_object_request r2d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(no_open_door_request r2d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
 
     // Goal: robot at bathroom
-    problem_expert_->setGoal(plansys2::Goal("(and (robot_at r2d2 bathroom))"));
+    problem_expert_->setGoal(plansys2::Goal("(and (robot_at r2d2 kitchen))"));
   }
 
   void step()
