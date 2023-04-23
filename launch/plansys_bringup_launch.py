@@ -72,6 +72,118 @@ def generate_launch_description():
             'bt_xml_file': project_dir + '/behavior_trees_xml/move_through_door.xml'
           }
         ])
+    
+    open_door_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='open_door',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'open_door',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/open_door.xml'
+          }
+        ])
+    
+    close_door_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='close_door',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'close_door',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/close_door.xml'
+          }
+        ])
+
+    pick_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='pick',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'pick',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/pick.xml'
+          }
+        ])
+    
+    drop_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='drop',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'drop',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/drop.xml'
+          }
+        ])
+    
+    give_object_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='give_object',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'give_object',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/give_object.xml'
+          }
+        ])
+    
+    arrange_object_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='arrange_object',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'arrange_object',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/arrange_object.xml'
+          }
+        ])
+    
+    requested_door_opened_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='requested_door_opened',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'requested_door_opened',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/requested_door_opened.xml'
+          }
+        ])
+    
+    requested_door_closed_cmd = Node(
+        package='plansys2_bt_actions',
+        executable='bt_action_node',
+        name='requested_door_closed',
+        namespace=namespace,
+        output='screen',
+        parameters=[
+          project_dir + '/config/plansys_config.yaml',
+          {
+            'action_name': 'requested_door_closed',
+            'bt_xml_file': project_dir + '/behavior_trees_xml/requested_door_closed.xml'
+          }
+        ])
 
     ld = LaunchDescription()
 
@@ -83,5 +195,13 @@ def generate_launch_description():
     # Declare the BT plansys2 actions
     ld.add_action(move_cmd)
     ld.add_action(move_through_door_cmd)
+    ld.add_action(open_door_cmd)
+    ld.add_action(close_door_cmd)
+    ld.add_action(pick_cmd)
+    ld.add_action(drop_cmd)
+    ld.add_action(give_object_cmd)
+    ld.add_action(arrange_object_cmd)
+    ld.add_action(requested_door_opened_cmd)
+    ld.add_action(requested_door_closed_cmd)
 
     return ld

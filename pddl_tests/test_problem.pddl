@@ -59,7 +59,7 @@
 )
 
 (:goal (and
-    (robot_at r2d2 D1_k)
+    (robot_at r2d2 bathroom)
   )
 )
 

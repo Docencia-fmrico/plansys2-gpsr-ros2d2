@@ -119,6 +119,8 @@ public:
     problem_expert_->addPredicate(plansys2::Predicate("(connected d2_lr living_room)"));
     problem_expert_->addPredicate(plansys2::Predicate("(door_connection d2 d2_br d2_lr)"));
     problem_expert_->addPredicate(plansys2::Predicate("(door_connection d2 d2_lr d2_br)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(next_to_door d2_br d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(next_to_door d2_lr d2)"));
 
     problem_expert_->addPredicate(plansys2::Predicate("(connected bedroom d3_br)"));
     problem_expert_->addPredicate(plansys2::Predicate("(connected d3_br bedroom)"));
@@ -135,14 +137,17 @@ public:
     problem_expert_->addPredicate(plansys2::Predicate("(door_closed d3)"));
 
     // Human orders
+    problem_expert_->addPredicate(plansys2::Predicate("(human_request_closedoor d1)"));
+    // problem_expert_->addPredicate(plansys2::Predicate("(human_request_opendoor d2)"));
+    // problem_expert_->addPredicate(plansys2::Predicate("(human_request_object granny towel)"));
 
-    // Order control predicates
+    // Order control predicates (indicates which type of order is inactive)
     problem_expert_->addPredicate(plansys2::Predicate("(no_object_request r2d2)"));
     problem_expert_->addPredicate(plansys2::Predicate("(no_open_door_request r2d2)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
+    // problem_expert_->addPredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
 
     // Goal: robot at bathroom
-    problem_expert_->setGoal(plansys2::Goal("(and (robot_at r2d2 kitchen))"));
+    problem_expert_->setGoal(plansys2::Goal("(and (no_close_door_request r2d2))"));
   }
 
   void step()
@@ -155,6 +160,15 @@ public:
       } else {
         RCLCPP_ERROR(get_logger(), "Plan finished with error");
       }
+    }
+    else {
+      auto feedback = executor_client_->getFeedBack();
+
+      for (const auto & action_feedback : feedback.action_execution_status) {
+        std::cout << "[" << action_feedback.action << " " <<
+          action_feedback.completion * 100.0 << "%]";
+      }
+      std::cout << std::endl;
     }
   }
 
