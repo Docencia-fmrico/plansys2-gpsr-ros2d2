@@ -185,6 +185,7 @@ person
   :effect 
     (and 
       (at end (no_object_request ?r))
+      (at end (not (robot_carries ?r ?o)))
       (at end (not (human_request_object ?p ?o)))
     )
 )

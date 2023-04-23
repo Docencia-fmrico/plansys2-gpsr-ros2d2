@@ -137,14 +137,17 @@ public:
     problem_expert_->addPredicate(plansys2::Predicate("(door_closed d3)"));
 
     // Human orders
+    problem_expert_->addPredicate(plansys2::Predicate("(human_request_closedoor d1)"));
+    // problem_expert_->addPredicate(plansys2::Predicate("(human_request_opendoor d2)"));
+    // problem_expert_->addPredicate(plansys2::Predicate("(human_request_object granny towel)"));
 
     // Order control predicates (indicates which type of order is inactive)
     problem_expert_->addPredicate(plansys2::Predicate("(no_object_request r2d2)"));
     problem_expert_->addPredicate(plansys2::Predicate("(no_open_door_request r2d2)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
+    // problem_expert_->addPredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
 
     // Goal: robot at bathroom
-    problem_expert_->setGoal(plansys2::Goal("(and (object_at towel bathroom))"));
+    problem_expert_->setGoal(plansys2::Goal("(and (no_close_door_request r2d2))"));
   }
 
   void step()

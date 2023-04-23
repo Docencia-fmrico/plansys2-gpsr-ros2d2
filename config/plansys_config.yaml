@@ -42,3 +42,19 @@ pick:
   ros__parameters:
     plugins:
       - ros2d2_pick_bt_node
+give_object:
+  ros__parameters:
+    plugins:
+      - ros2d2_give_object_bt_node
+arrange_object:
+  ros__parameters:
+    plugins:
+      - ros2d2_arrange_object_bt_node
+requested_door_closed:
+  ros__parameters:
+    plugins:
+      - ros2d2_requested_door_closed_bt_node
+requested_door_opened:
+  ros__parameters:
+    plugins:
+      - ros2d2_requested_door_opened_bt_node
