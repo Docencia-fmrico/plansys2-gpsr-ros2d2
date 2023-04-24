@@ -24,6 +24,13 @@ The objective of this project is to make a robot (in this case a TurtleBot3 Burg
 
 Seeing how many problems gazebo and the code from pal robotics were giving we decided to do this project using Webots and the TurtleBot3 Burger. We also wanted to use the knowledge we have from other classes on this simulator so we built our own world:
 
+![alt text](https://github.com/Docencia-fmrico/plansys2-gpsr-ros2d2/blob/Readme/Media/House_img.png)
+
+We also mapped it in order to navigate it:
+
+![alt text](https://github.com/Docencia-fmrico/plansys2-gpsr-ros2d2/blob/Readme/map/big_house.pgm)
+
+
 ### Tests
 
 ## Usage
