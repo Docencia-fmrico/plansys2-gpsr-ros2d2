@@ -3,6 +3,35 @@
 
 Ejercicio 4 de Planificación y Sistemas Cognitivos 2023
 
+[![main](https://github.com/Docencia-fmrico/patrolling-ros2d2/actions/workflows/main.yaml/badge.svg?branch=main)](https://github.com/Docencia-fmrico/patrolling-ros2d2/actions/workflows/main.yaml)
+
+# Patrolling ROS2D2
+
+## Content table
+1. [Introduction](#Introduction)
+2. [About](#About)
+3. [Usage](#Usage)
+
+## Introduction
+
+The objective of this project is to make a robot (in this case a TurtleBot3 Burger) to execute a plan to order a house and giving priority to the hose owner instructions.
+
+## About
+
+### Planing
+
+### Behaviour Tree
+
+### Tests
+
+## Usage
+
+### Installation
+
+
+## Working examples
+
+## Instructions
 En grupos de 4, haced una aplicación en ROS 2 usando PlanSys2 que use el dominio de la [Práctica 3](https://github.com/Docencia-fmrico/planning-exercise/blob/main/README.md). El robot debe poder realizar en un simulador, navegando con Nav2, goals similares a los siguientes:
 
 (ordena_casa robot1)
