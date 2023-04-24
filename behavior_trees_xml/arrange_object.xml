@@ -1,7 +1,7 @@
 <root main_tree_to_execute = "MainTree" >
     <BehaviorTree ID="MainTree">
        <Sequence name="root_sequence">
-           <CloseDoor    name="close_door" object="${arg0}"/>
+           <ArrangeObject    name="arrange_object" object="${arg0}"/>
        </Sequence>
     </BehaviorTree>
 </root>
