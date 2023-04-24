@@ -28,7 +28,7 @@ Seeing how many problems gazebo and the code from pal robotics were giving we de
 
 We also mapped it in order to navigate it:
 
-![alt text](https://github.com/Docencia-fmrico/plansys2-gpsr-ros2d2/blob/Readme/map/big_house.pgm)
+![alt text](https://github.com/Docencia-fmrico/plansys2-gpsr-ros2d2/blob/Readme/Media/big_house.png)
 
 
 ### Tests
