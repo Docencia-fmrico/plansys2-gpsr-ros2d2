@@ -4,28 +4,34 @@ move:
       - ros2d2_move_bt_node
     waypoints: ["kitchen", "living_room", "bedroom", "bathroom", "d1_k", "d1_lr", "d2_br", "d2_lr", "d3_br", "d3_bath"]
     waypoint_coords:
-      kitchen: [0.0, 1.2]
-      living_room: [0.0, -1.12]
-      bedroom: [0.0, 0.0]
-      bathroom: [0.0, 0.0]
-      d1_k: [0.0, 0.5]
-      d1_lr: [0.0, 0.0]
-      d2_br: [0.0, 0.0]
-      d2_lr: [0.0, 0.0]
-      d3_br: [0.0, 0.0]
-      d3_bath: [0.0, 0.0]
+      kitchen: [0.45, 2.91]
+      living_room: [1.0, -3.75]
+      corridor: [-2.19, 0.3]
+      bedroom: [-4.01, 1.71]
+      bathroom: [-5.03, -3.27]
+      d1_k: [-0.32, 0.68]
+      d1_lr: [-0.37, -0.07]
+      d2_cr: [-1.84, -1.64]
+      d2_lr: [-0.70, -1.55]
+      d3_br: [-3.46, 1.45]
+      d3_cr: [-2.51, 1.45]
+      d4_bath: [-5.32, -2.24]
+      d4_br: [-5.32, -0.86]
+      d5_house: [-2.27, -4.23]
 move_through_door:
   ros__parameters:
     plugins:
       - ros2d2_move_through_door_bt_node
     waypoints: ["d1_k", "d1_lr", "d2_br", "d2_lr", "d3_br", "d3_bath"]
     waypoint_coords:
-      d1_k: [0.0, 0.0]
-      d1_lr: [0.0, 0.0]
-      d2_br: [0.0, 0.0]
-      d2_lr: [0.0, 0.0]
-      d3_br: [0.0, 0.0]
-      d3_bath: [0.0, 0.0]
+      d1_k: [-0.32, 0.68]
+      d1_lr: [-0.37, -0.07]
+      d2_cr: [-1.84, -1.64]
+      d2_lr: [-0.70, -1.55]
+      d3_br: [-3.46, 1.45]
+      d3_cr: [-2.51, 1.45]
+      d4_bath: [-5.32, -2.24]
+      d4_br: [-5.32, -0.86]
 open_door:
   ros__parameters:
     plugins:
