@@ -26,6 +26,7 @@ from launch_ros.actions import Node
 
 TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']
 
+
 def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
@@ -72,7 +73,7 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([tb3_tbworld_launch_file_dir, '/robot_launch.py']),
         ),
-                
+
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([nav2_launch_file_dir, '/bringup_launch.py']),
             launch_arguments={

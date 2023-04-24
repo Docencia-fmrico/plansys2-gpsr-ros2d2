@@ -41,7 +41,7 @@ RequestedDoorClosed::tick()
   std::string door;
   getInput<std::string>("door", door);
   std::cout << "Closed requested door: " << door << std::endl;
-    
+
   return BT::NodeStatus::SUCCESS;
 }
 

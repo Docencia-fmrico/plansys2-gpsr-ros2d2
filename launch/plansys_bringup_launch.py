@@ -72,7 +72,7 @@ def generate_launch_description():
             'bt_xml_file': project_dir + '/behavior_trees_xml/move_through_door.xml'
           }
         ])
-    
+
     open_door_cmd = Node(
         package='plansys2_bt_actions',
         executable='bt_action_node',
@@ -86,7 +86,7 @@ def generate_launch_description():
             'bt_xml_file': project_dir + '/behavior_trees_xml/open_door.xml'
           }
         ])
-    
+
     close_door_cmd = Node(
         package='plansys2_bt_actions',
         executable='bt_action_node',
@@ -114,7 +114,7 @@ def generate_launch_description():
             'bt_xml_file': project_dir + '/behavior_trees_xml/pick.xml'
           }
         ])
-    
+
     drop_cmd = Node(
         package='plansys2_bt_actions',
         executable='bt_action_node',
@@ -128,7 +128,7 @@ def generate_launch_description():
             'bt_xml_file': project_dir + '/behavior_trees_xml/drop.xml'
           }
         ])
-    
+
     give_object_cmd = Node(
         package='plansys2_bt_actions',
         executable='bt_action_node',
@@ -142,7 +142,7 @@ def generate_launch_description():
             'bt_xml_file': project_dir + '/behavior_trees_xml/give_object.xml'
           }
         ])
-    
+
     arrange_object_cmd = Node(
         package='plansys2_bt_actions',
         executable='bt_action_node',
@@ -156,7 +156,7 @@ def generate_launch_description():
             'bt_xml_file': project_dir + '/behavior_trees_xml/arrange_object.xml'
           }
         ])
-    
+
     requested_door_opened_cmd = Node(
         package='plansys2_bt_actions',
         executable='bt_action_node',
@@ -170,7 +170,7 @@ def generate_launch_description():
             'bt_xml_file': project_dir + '/behavior_trees_xml/requested_door_opened.xml'
           }
         ])
-    
+
     requested_door_closed_cmd = Node(
         package='plansys2_bt_actions',
         executable='bt_action_node',
