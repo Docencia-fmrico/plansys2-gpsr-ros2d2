@@ -42,7 +42,7 @@ person
 ;; Actions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (:durative-action move_through_door
     :parameters (?r - robot ?z1 ?z2 - predoor ?d - door)
-    :duration (= ?duration 5)
+    :duration (= ?duration 50)
     :condition 
         (and
           (at start(robot_at ?r ?z1))
@@ -60,7 +60,7 @@ person
 
 (:durative-action move
   :parameters (?r - robot ?z1 ?z2 - location)
-  :duration (= ?duration 5)
+  :duration (= ?duration 50)
   :condition 
       (and 
         (at start(robot_at ?r ?z1))
@@ -78,7 +78,7 @@ person
 
 (:durative-action open_door
   :parameters (?r - robot ?d - door ?z1 - predoor)
-  :duration (= ?duration 5)
+  :duration (= ?duration 50)
   :condition 
       (and 
         (at start (next_to_door ?z1 ?d))
@@ -94,7 +94,7 @@ person
 
 (:durative-action requested_door_opened
   :parameters (?d - door ?r - robot ?z1 - predoor)
-  :duration (= ?duration 5)
+  :duration (= ?duration 50)
   :condition 
       (and 
         (at start (robot_at ?r ?z1))
@@ -111,7 +111,7 @@ person
 
 (:durative-action close_door
   :parameters (?r - robot ?d - door ?z1 - predoor)
-  :duration (= ?duration 5)
+  :duration (= ?duration 50)
   :condition 
       (and 
         (at start (next_to_door ?z1 ?d))
@@ -127,7 +127,7 @@ person
 
 (:durative-action requested_door_closed
   :parameters (?d - door ?r - robot ?z1 - predoor)
-  :duration (= ?duration 5)
+  :duration (= ?duration 50)
   :condition 
       (and 
         (at start (robot_at ?r ?z1))
@@ -144,7 +144,7 @@ person
 
 (:durative-action pick
   :parameters (?o - object ?l - room ?r - robot)
-  :duration (= ?duration 5)
+  :duration (= ?duration 50)
   :condition 
     (and
       (at start(object_at ?o ?l))
@@ -159,7 +159,7 @@ person
 
 (:durative-action drop
   :parameters (?o - object ?l - room ?r - robot)
-  :duration (= ?duration 5)
+  :duration (= ?duration 50)
   :condition 
     (and 
       (at start(robot_at ?r ?l))
@@ -174,7 +174,7 @@ person
 
 (:durative-action give_object
   :parameters (?o - object ?l - room ?r - robot ?p - person)
-  :duration (= ?duration 5)
+  :duration (= ?duration 50)
   :condition 
     (and 
       (at start(robot_carries ?r ?o))
@@ -190,7 +190,7 @@ person
     )
 )
 
-(:durative-action arrange-object
+(:durative-action arrange_object
   :parameters (?o - object ?l - room ?r - robot)
   :duration (= ?duration 50)
   :condition 
