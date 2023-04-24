@@ -5,7 +5,7 @@ Ejercicio 4 de Planificación y Sistemas Cognitivos 2023
 
 [![main](https://github.com/Docencia-fmrico/patrolling-ros2d2/actions/workflows/main.yaml/badge.svg?branch=main)](https://github.com/Docencia-fmrico/patrolling-ros2d2/actions/workflows/main.yaml)
 
-# Patrolling ROS2D2
+# Plansys2 GPSR ROS2D2
 
 ## Content table
 1. [Introduction](#Introduction)
