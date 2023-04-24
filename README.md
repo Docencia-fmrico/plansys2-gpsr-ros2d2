@@ -20,7 +20,9 @@ The objective of this project is to make a robot (in this case a TurtleBot3 Burg
 
 ### Planing
 
-### Behaviour Tree
+### World
+
+Seeing how many problems gazebo and the code from pal robotics were giving we decided to do this project using Webots and the TurtleBot3 Burger. We also wanted to use the knowledge we have from other classes on this simulator so we built our own world:
 
 ### Tests
 
