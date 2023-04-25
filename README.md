@@ -1,11 +1,10 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-8d59dc4de5201274e310e4c54b9627a8934c3b88527886e3b421487c677d23eb.svg)](https://classroom.github.com/a/j9y_86cr)
-# plansys2_gpsr
-
-Ejercicio 4 de Planificación y Sistemas Cognitivos 2023
 
 [![main](https://github.com/Docencia-fmrico/patrolling-ros2d2/actions/workflows/main.yaml/badge.svg?branch=main)](https://github.com/Docencia-fmrico/patrolling-ros2d2/actions/workflows/main.yaml)
 
 # Plansys2 GPSR ROS2D2
+
+Ejercicio 4 de Planificación y Sistemas Cognitivos 2023
 
 ## Content table
 1. [Introduction](#Introduction)
@@ -14,7 +13,7 @@ Ejercicio 4 de Planificación y Sistemas Cognitivos 2023
 
 ## Introduction
 
-The main objective of this project is to equip a TurtleBot3 Burger with planification capabilities, enabling it to carry out various domestic activities. This is achieved by implementing the PlanSys2 stack and using Behavior Trees to represent each of the robot's actions.
+The main objective of this project is to equip a TurtleBot3 Burger with planification capabilities, enabling it to carry out various domestic activities. This is achieved by using the PlanSys2 stack and using Behavior Trees to represent each of the robot's actions.
 
 The specific problem at hand involves assisting a person with various tasks within their home, such as placing objects in designated locations, opening/closing doors, and retrieving objects for the person.
 
@@ -134,9 +133,14 @@ The following nodes have been subjectd to this test: close_door, open_door, pick
 
 ### Installation and launching
 
-First clone the next git repository: https://github.com/PlanSys2/ros2_planning_system.git
+First clone the next git repository: 
 
-Afterwards you should clone that allows to launch the webots simulator: https://github.com/OscarMrZ/tb3_webots_minimal.git
+https://github.com/PlanSys2/ros2_planning_system.git
+
+Afterwards you should clone that allows to launch the webots simulator: 
+
+https://github.com/OscarMrZ/tb3_webots_minimal.git
+
 In order to oppen the simulation launch: 
 
 ```
