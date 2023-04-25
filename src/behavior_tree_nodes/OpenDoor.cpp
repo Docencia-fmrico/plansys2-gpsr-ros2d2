@@ -12,31 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string>
-#include <iostream>
-
 #include "behavior_tree_nodes/OpenDoor.hpp"
+
+#include <iostream>
+#include <string>
 
 #include "behaviortree_cpp_v3/behavior_tree.h"
 
 namespace plansys2_gpsr_ros2d2
 {
 
-OpenDoor::OpenDoor(
-  const std::string & xml_tag_name,
-  const BT::NodeConfiguration & conf)
+OpenDoor::OpenDoor(const std::string & xml_tag_name, const BT::NodeConfiguration & conf)
 : BT::ActionNodeBase(xml_tag_name, conf), counter_(0)
 {
 }
 
-void
-OpenDoor::halt()
-{
-  std::cout << "OpenDoor halt" << std::endl;
-}
+void OpenDoor::halt() {std::cout << "OpenDoor halt" << std::endl;}
 
-BT::NodeStatus
-OpenDoor::tick()
+BT::NodeStatus OpenDoor::tick()
 {
   std::string door;
   getInput<std::string>("door", door);
@@ -53,7 +46,6 @@ OpenDoor::tick()
 }  // namespace plansys2_gpsr_ros2d2
 
 #include "behaviortree_cpp_v3/bt_factory.h"
-BT_REGISTER_NODES(factory)
-{
+BT_REGISTER_NODES(factory) {
   factory.registerNodeType<plansys2_gpsr_ros2d2::OpenDoor>("OpenDoor");
 }

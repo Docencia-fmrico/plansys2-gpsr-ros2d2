@@ -27,18 +27,12 @@ class RequestedDoorOpened : public BT::ActionNodeBase
 {
 public:
   explicit RequestedDoorOpened(
-    const std::string & xml_tag_name,
-    const BT::NodeConfiguration & conf);
+    const std::string & xml_tag_name, const BT::NodeConfiguration & conf);
 
   void halt();
   BT::NodeStatus tick();
 
-  static BT::PortsList providedPorts()
-  {
-    return {
-      BT::InputPort<std::string>("door")
-    };
-  }
+  static BT::PortsList providedPorts() {return {BT::InputPort<std::string>("door")};}
 
 private:
   int counter_;

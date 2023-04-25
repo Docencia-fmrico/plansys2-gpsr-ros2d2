@@ -12,31 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string>
-#include <iostream>
-
 #include "behavior_tree_nodes/Drop.hpp"
+
+#include <iostream>
+#include <string>
 
 #include "behaviortree_cpp_v3/behavior_tree.h"
 
 namespace plansys2_gpsr_ros2d2
 {
 
-Drop::Drop(
-  const std::string & xml_tag_name,
-  const BT::NodeConfiguration & conf)
+Drop::Drop(const std::string & xml_tag_name, const BT::NodeConfiguration & conf)
 : BT::ActionNodeBase(xml_tag_name, conf), counter_(0)
 {
 }
 
-void
-Drop::halt()
-{
-  std::cout << "Drop halt" << std::endl;
-}
+void Drop::halt() {std::cout << "Drop halt" << std::endl;}
 
-BT::NodeStatus
-Drop::tick()
+BT::NodeStatus Drop::tick()
 {
   std::string object;
   getInput<std::string>("object", object);
@@ -53,7 +46,6 @@ Drop::tick()
 }  // namespace plansys2_gpsr_ros2d2
 
 #include "behaviortree_cpp_v3/bt_factory.h"
-BT_REGISTER_NODES(factory)
-{
+BT_REGISTER_NODES(factory) {
   factory.registerNodeType<plansys2_gpsr_ros2d2::Drop>("Drop");
 }
