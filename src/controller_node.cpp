@@ -27,6 +27,26 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 
+enum {
+  CLOSE = 0,
+  OPEN = 1,
+  OBJECT = 2, 
+  EMPTY = 3
+};
+
+// Order structs
+typedef struct {
+  std::string object;
+  std::string room;
+} arrange_order;
+
+typedef struct {
+  std::string door;
+  std::string person;
+  std::string object;
+  int type;
+} human_request;
+
 class Assemble : public rclcpp::Node
 {
 public:
@@ -42,7 +62,15 @@ public:
     problem_expert_ = std::make_shared<plansys2::ProblemExpertClient>();
     executor_client_ = std::make_shared<plansys2::ExecutorClient>();
 
-    init_knowledge();
+    init_basic_knowledge();
+
+    return true;
+  }
+
+  void generate_plan(std::vector <arrange_order> arrange_orders, human_request request)
+  {
+    // Setup the new goal
+    setup_goal(arrange_orders, request);
 
     auto domain = domain_expert_->getDomain();
     auto problem = problem_expert_->getProblem();
@@ -51,17 +79,54 @@ public:
     if (!plan.has_value()) {
       std::cout << "Could not find plan to reach goal " <<
         parser::pddl::toString(problem_expert_->getGoal()) << std::endl;
-      return false;
+      return;
     }
 
     if (!executor_client_->start_plan_execution(plan.value())) {
-      RCLCPP_ERROR(get_logger(), "Error starting a new plan (first)");
+      RCLCPP_ERROR(get_logger(), "Error starting a new plan (replan)");
     }
-
-    return true;
   }
 
-  void init_knowledge()
+  void setup_goal(std::vector<arrange_order> arrange_orders, human_request request)
+  {
+    std::string goal_expression = "(and ";
+
+    // Order initial status
+    problem_expert_->addPredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(no_open_door_request r2d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(no_object_request r2d2)"));
+
+    // Add all object goals
+    for (auto order : arrange_orders) {
+      goal_expression += "(object_at " + order.object + " " + order.room + ") ";
+    }
+
+    // Add the human request goal
+    if (request.type == OPEN) {
+
+      problem_expert_->addPredicate(plansys2::Predicate("(human_request_opendoor " + request.door + ")"));
+      problem_expert_->removePredicate(plansys2::Predicate("(no_open_door_request r2d2)"));
+      goal_expression += "(no_open_door_request r2d2) ";
+
+    } else if (request.type == CLOSE) {
+
+      problem_expert_->addPredicate(plansys2::Predicate("(human_request_closedoor " + request.door + ")"));
+      problem_expert_->removePredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
+      goal_expression += "(no_close_door_request r2d2) ";
+
+    } else if (request.type == OBJECT) {
+
+      problem_expert_->addPredicate(plansys2::Predicate("(human_request_object " + request.object + ")"));
+      problem_expert_->removePredicate(plansys2::Predicate("(no_object_request r2d2)"));
+      goal_expression += "(no_object_request r2d2) ";
+
+    }  
+
+    goal_expression += ")";
+    problem_expert_->setGoal(plansys2::Goal(goal_expression));
+  }
+
+  void init_basic_knowledge()
   {
     // Init the robot
     problem_expert_->addInstance(plansys2::Instance{"r2d2", "robot"});
@@ -167,19 +232,6 @@ public:
     problem_expert_->addPredicate(plansys2::Predicate("(door_closed d3)"));
     problem_expert_->addPredicate(plansys2::Predicate("(door_closed d4)"));
     problem_expert_->addPredicate(plansys2::Predicate("(door_open d5)"));
-
-    // Human orders
-    problem_expert_->addPredicate(plansys2::Predicate("(human_request_closedoor d5)"));
-    // problem_expert_->addPredicate(plansys2::Predicate("(human_request_opendoor d2)"));
-    // problem_expert_->addPredicate(plansys2::Predicate("(human_request_object granny towel)"));
-
-    // Order control predicates (indicates which type of order is inactive)
-    problem_expert_->addPredicate(plansys2::Predicate("(no_object_request r2d2)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(no_open_door_request r2d2)"));
-    // problem_expert_->addPredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
-
-    // Goal: robot at bathroom
-    problem_expert_->setGoal(plansys2::Goal("(and (no_close_door_request r2d2))"));
   }
 
   void step()
@@ -216,16 +268,28 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   auto node = std::make_shared<Assemble>();
 
-  if (!node->init()) {
-    return 0;
-  }
+  // Init the world knowledge
+  node->init();
+
+  // This info will come from the GUI
+  std::vector <arrange_order> arrange_orders;
+  arrange_orders.push_back({"towel", "bathroom"});
+  human_request request;
+  request.type = EMPTY;
+  node->generate_plan(arrange_orders, request);
 
   rclcpp::Rate rate(5);
+
   while (rclcpp::ok()) {
+
+    // Spin the node
+    rclcpp::spin_some(node->get_node_base_interface());
+
+    // Execute one step
     node->step();
 
+    // Sleep as needed
     rate.sleep();
-    rclcpp::spin_some(node->get_node_base_interface());
   }
 
   rclcpp::shutdown();
