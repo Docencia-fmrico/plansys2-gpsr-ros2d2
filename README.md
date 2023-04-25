@@ -141,7 +141,7 @@ Afterwards you should clone that allows to launch the webots simulator:
 
 https://github.com/OscarMrZ/tb3_webots_minimal.git
 
-In order to oppen the simulation launch: 
+In order to open the simulation launch: 
 
 ```
 ros2 launch tb3_webots_minimal robot_launch.py
@@ -155,17 +155,20 @@ ros2 launch plansys2_gpsr_ros2d2 robot_bringup_launch.py
 ros2 launch plansys2_gpsr_ros2d2 plansys_bringup_launch.py
 ```
 
-And finnaly run it:
+And finally run it:
 
 ```
 ros2 run plansys2_gpsr_ros2d2 controller_node.cpp
 ```
+
+The GUI is pretty straightforward. Clicking in the general actions activates the clicked action. Only one special request from a human can be executed at the same time. To select it, just click on the door/object until the one you want appears. The one special action clicked is the active one. 
 
 ## Working example
 
 https://youtu.be/TuEe4allwSE
 
 ## Instructions
+
 En grupos de 4, haced una aplicación en ROS 2 usando PlanSys2 que use el dominio de la [Práctica 3](https://github.com/Docencia-fmrico/planning-exercise/blob/main/README.md). El robot debe poder realizar en un simulador, navegando con Nav2, goals similares a los siguientes:
 
 (ordena_casa robot1)
