@@ -40,9 +40,10 @@ ArrangeObject::tick()
 {
   std::string object;
   getInput<std::string>("object", object);
-  std::cout << "ArrangeObject tick " << counter_ << std::endl;
+  std::cout << "Arranging object " << object << std::endl;
 
   if (counter_++ < 5) {
+
     return BT::NodeStatus::RUNNING;
   } else {
     counter_ = 0;

@@ -40,7 +40,7 @@ Pick::tick()
 {
   std::string object;
   getInput<std::string>("object", object);
-  std::cout << "Pick tick " << counter_ << std::endl;
+  std::cout << "Picking object " << object << std::endl;
 
   if (counter_++ < 5) {
     return BT::NodeStatus::RUNNING;

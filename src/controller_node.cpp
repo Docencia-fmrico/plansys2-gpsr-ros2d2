@@ -84,6 +84,8 @@ void mouse_callback(int event, int x, int y, int flags, void *param)
     cv::Point *point = (cv::Point *)param;
     point->x = x;
     point->y = y;
+
+    std::cout << "Mouse clicked at: " << x << ", " << y << std::endl;
   }
 }
 
@@ -104,10 +106,15 @@ public:
 
     init_basic_knowledge();
 
+    index_open_ = 0;
+    index_close_ = 0;
+    index_object_ = 0;
+    yoda_request_.type = EMPTY;
+
     // Setp the objects and the doors
-    std::vector<std::string> objects = {"towel", "cutlery", "milk", "medicine", "clothes", "photo"};
-    std::vector<std::string> doors = {"d1", "d2", "d3", "d4", "d5"};
-    active_zones_ = {false, false, false, false};
+    objects_ = {"towel", "cutlery", "milk", "medicine", "clothes", "photo"};
+    doors_ = {"d1", "d2", "d3", "d4", "d5"};
+    active_zones_ = {false, false, false, false, false, false, false};
 
     auto gui_path_ = ament_index_cpp::get_package_share_directory("plansys2_gpsr_ros2d2") + "/img/gui.png";
     gui_image_ = cv::imread(gui_path_, cv::IMREAD_COLOR);
@@ -151,7 +158,7 @@ public:
 
     // Add all object goals
     for (auto order : arrange_orders) {
-      goal_expression += "(object_at " + order.object + " " + order.room + ") ";
+      goal_expression += "(arranged_object " + order.object + " " + order.room + ") ";
     }
 
     // Add the human request goal
@@ -169,7 +176,7 @@ public:
 
     } else if (request.type == OBJECT) {
 
-      problem_expert_->addPredicate(plansys2::Predicate("(human_request_object " + request.object + ")"));
+      problem_expert_->addPredicate(plansys2::Predicate("(human_request_object granny " + request.object + ")"));
       problem_expert_->removePredicate(plansys2::Predicate("(no_object_request r2d2)"));
       goal_expression += "(no_object_request r2d2) ";
 
@@ -318,10 +325,6 @@ public:
     // Generate a goal if the system is IDLE
     if (status_ == NEWPLAN) {
 
-      // This info will come from the GUI
-      human_request request;
-      request.type = EMPTY;
-
       // Print a list of the arrange actions
       for (int i = 0; i < arrange_orders_.size(); i++){
         std::string text = arrange_orders_[i].object + " -> " + arrange_orders_[i].room;
@@ -329,7 +332,7 @@ public:
       }
 
       // Generate a plan
-      generate_plan(arrange_orders_, request);
+      generate_plan(arrange_orders_, yoda_request_);
       status_ = RUNNING;
 
     }
@@ -358,9 +361,10 @@ public:
 
   void update_arrange_actions(int zone) 
   {
-    if (zone != -1) {
+
+    // Only update the arrange actions if the zone is valid
+    if (zone != -1 && zone < 5) {
       active_zones_[zone] = !active_zones_[zone];
-      std::cout << "The zone " << zone << " is now " << active_zones_[zone] << std::endl;
     }
 
     // Check for the active zones and draw a rectangle in the text
@@ -404,6 +408,80 @@ public:
     }
   }
 
+  void update_yoda_request(int zone)
+  {
+    if (zone == OPEN_REQUEST) {
+
+      active_zones_[zone] = true;
+      active_zones_[CLOSE_REQUEST] = false;
+      active_zones_[OBJECT_REQUEST] = false;
+
+      // Update the clicked times
+      if (index_open_ < 4) index_open_++;
+      else index_open_ = 0;
+    }
+    else if (zone == CLOSE_REQUEST) {
+
+      active_zones_[zone] = true;
+      active_zones_[OPEN_REQUEST] = false;
+      active_zones_[OBJECT_REQUEST] = false;
+
+      // Update the clicked times
+      if (index_close_ < 4) index_close_++;
+      else index_close_ = 0;
+    }
+    else if (zone == OBJECT_REQUEST) {
+
+      active_zones_[zone] = true;
+      active_zones_[OPEN_REQUEST] = false;
+      active_zones_[CLOSE_REQUEST] = false;
+
+      // Update the clicked times
+      if (index_object_ < 5) index_object_++;
+      else index_object_ = 0;
+    }
+
+    for (int i = 4; i < active_zones_.size(); i++){
+
+      if (i == OPEN_REQUEST) {
+        
+        // Generate a text in the image representing the door
+        cv::putText(edited_gui_, doors_[index_open_], cv::Point(992, 345), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 2);
+
+        if (active_zones_[i]){
+
+          yoda_request_.type = OPEN;
+          yoda_request_.door = doors_[index_open_];
+
+        }
+      }
+      else if (i == CLOSE_REQUEST) {
+
+        // Generate a text in the image representing the door
+        cv::putText(edited_gui_, doors_[index_close_], cv::Point(994, 385), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 2);
+
+        if (active_zones_[i]){
+
+          yoda_request_.type = CLOSE;
+          yoda_request_.door = doors_[index_close_];
+  
+        }
+      }
+      else if (i == OBJECT_REQUEST) {
+
+        // Generate a text in the image representing the door
+        cv::putText(edited_gui_, objects_[index_object_], cv::Point(970, 420), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);
+
+        if (active_zones_[i]){
+
+          yoda_request_.type = OBJECT;
+          yoda_request_.object = objects_[index_object_];
+
+        }
+      }
+    }
+  }
+
   void gui_updater()
   {
     edited_gui_ = gui_image_.clone();
@@ -414,13 +492,13 @@ public:
     // Update the list of arrange actions
     update_arrange_actions(zone);
 
+    // Generate the request
+    update_yoda_request(zone);
+
     // Check for start condition
     if (zone == START && status_ == IDLE) {
-      if (arrange_orders_.size() > 0) {
-        std::cout << "Start condition" << std::endl;
-        status_ = NEWPLAN;
-      }
-      else std::cout << "No arrange actions selected" << std::endl;
+      std::cout << "Start condition" << std::endl;
+      status_ = NEWPLAN;
     }
 
     cv::imshow("R2D2 control panel", edited_gui_);
@@ -439,7 +517,11 @@ private:
   std::vector <std::string> objects_;
   std::vector <std::string> doors_;
   std::vector <arrange_order> arrange_orders_;
+  human_request yoda_request_;
   std::vector <bool> active_zones_;
+  int index_open_;
+  int index_close_;
+  int index_object_;
 };
 
 int main(int argc, char ** argv)

@@ -40,13 +40,7 @@ OpenDoor::tick()
 {
   std::string door;
   getInput<std::string>("door", door);
-
-  // Print the door that's being opened just once
-  if (counter_ == 0) {
-    std::cout << "Opening door " << door << std::endl;
-  }
-
-  std::cout << "OpenDoor tick " << counter_ << std::endl;
+  std::cout << "Opening door " << door << std::endl;
 
   if (counter_++ < 5) {
     return BT::NodeStatus::RUNNING;

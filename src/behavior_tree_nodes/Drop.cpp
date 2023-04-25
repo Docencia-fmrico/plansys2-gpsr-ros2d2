@@ -40,7 +40,7 @@ Drop::tick()
 {
   std::string object;
   getInput<std::string>("object", object);
-  std::cout << "Drop tick " << counter_ << std::endl;
+  std::cout << "Droping object " << object << std::endl;
 
   if (counter_++ < 5) {
     return BT::NodeStatus::RUNNING;
