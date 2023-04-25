@@ -12,38 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string>
-#include <iostream>
-
 #include "behavior_tree_nodes/ArrangeObject.hpp"
+
+#include <iostream>
+#include <string>
 
 #include "behaviortree_cpp_v3/behavior_tree.h"
 
 namespace plansys2_gpsr_ros2d2
 {
 
-ArrangeObject::ArrangeObject(
-  const std::string & xml_tag_name,
-  const BT::NodeConfiguration & conf)
+ArrangeObject::ArrangeObject(const std::string & xml_tag_name, const BT::NodeConfiguration & conf)
 : BT::ActionNodeBase(xml_tag_name, conf), counter_(0)
 {
 }
 
-void
-ArrangeObject::halt()
-{
-  std::cout << "ArrangeObject halt" << std::endl;
-}
+void ArrangeObject::halt() {std::cout << "ArrangeObject halt" << std::endl;}
 
-BT::NodeStatus
-ArrangeObject::tick()
+BT::NodeStatus ArrangeObject::tick()
 {
   std::string object;
   getInput<std::string>("object", object);
   std::cout << "Arranging object " << object << std::endl;
 
   if (counter_++ < 5) {
-
     return BT::NodeStatus::RUNNING;
   } else {
     counter_ = 0;

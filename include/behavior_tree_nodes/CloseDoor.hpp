@@ -26,19 +26,12 @@ namespace plansys2_gpsr_ros2d2
 class CloseDoor : public BT::ActionNodeBase
 {
 public:
-  explicit CloseDoor(
-    const std::string & xml_tag_name,
-    const BT::NodeConfiguration & conf);
+  explicit CloseDoor(const std::string & xml_tag_name, const BT::NodeConfiguration & conf);
 
   void halt();
   BT::NodeStatus tick();
 
-  static BT::PortsList providedPorts()
-  {
-    return {
-      BT::InputPort<std::string>("door")
-    };
-  }
+  static BT::PortsList providedPorts() {return {BT::InputPort<std::string>("door")};}
 
 private:
   int counter_;

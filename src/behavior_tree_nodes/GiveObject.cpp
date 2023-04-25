@@ -12,31 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string>
-#include <iostream>
-
 #include "behavior_tree_nodes/GiveObject.hpp"
+
+#include <iostream>
+#include <string>
 
 #include "behaviortree_cpp_v3/behavior_tree.h"
 
 namespace plansys2_gpsr_ros2d2
 {
 
-GiveObject::GiveObject(
-  const std::string & xml_tag_name,
-  const BT::NodeConfiguration & conf)
+GiveObject::GiveObject(const std::string & xml_tag_name, const BT::NodeConfiguration & conf)
 : BT::ActionNodeBase(xml_tag_name, conf), counter_(0)
 {
 }
 
-void
-GiveObject::halt()
-{
-  std::cout << "GiveObject halt" << std::endl;
-}
+void GiveObject::halt() {std::cout << "GiveObject halt" << std::endl;}
 
-BT::NodeStatus
-GiveObject::tick()
+BT::NodeStatus GiveObject::tick()
 {
   std::string object;
   getInput<std::string>("object", object);

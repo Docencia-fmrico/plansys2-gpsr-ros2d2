@@ -15,37 +15,29 @@
 #ifndef BEHAVIOR_TREE_NODES__MOVE_HPP_
 #define BEHAVIOR_TREE_NODES__MOVE_HPP_
 
-#include <string>
 #include <map>
+#include <string>
 
-#include "geometry_msgs/msg/pose2_d.hpp"
-#include "nav2_msgs/action/navigate_to_pose.hpp"
-
-#include "plansys2_bt_actions/BTActionNode.hpp"
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include "behaviortree_cpp_v3/bt_factory.h"
+#include "geometry_msgs/msg/pose2_d.hpp"
+#include "nav2_msgs/action/navigate_to_pose.hpp"
+#include "plansys2_bt_actions/BTActionNode.hpp"
 
 namespace plansys2_gpsr_ros2d2
 {
 
-class Move : public plansys2::BtActionNode<
-    nav2_msgs::action::NavigateToPose>
+class Move : public plansys2::BtActionNode<nav2_msgs::action::NavigateToPose>
 {
 public:
   explicit Move(
-    const std::string & xml_tag_name,
-    const std::string & action_name,
+    const std::string & xml_tag_name, const std::string & action_name,
     const BT::NodeConfiguration & conf);
 
   BT::NodeStatus on_tick() override;
   BT::NodeStatus on_success() override;
 
-  static BT::PortsList providedPorts()
-  {
-    return {
-      BT::InputPort<std::string>("goal")
-    };
-  }
+  static BT::PortsList providedPorts() {return {BT::InputPort<std::string>("goal")};}
 
 private:
   std::map<std::string, geometry_msgs::msg::Pose2D> waypoints_;

@@ -15,26 +15,23 @@
 #ifndef BEHAVIOR_TREE_NODES__MOVETHROUGHDOOR_HPP_
 #define BEHAVIOR_TREE_NODES__MOVETHROUGHDOOR_HPP_
 
-#include <string>
 #include <map>
+#include <string>
 
-#include "geometry_msgs/msg/pose2_d.hpp"
-#include "nav2_msgs/action/navigate_to_pose.hpp"
-
-#include "plansys2_bt_actions/BTActionNode.hpp"
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include "behaviortree_cpp_v3/bt_factory.h"
+#include "geometry_msgs/msg/pose2_d.hpp"
+#include "nav2_msgs/action/navigate_to_pose.hpp"
+#include "plansys2_bt_actions/BTActionNode.hpp"
 
 namespace plansys2_gpsr_ros2d2
 {
 
-class MoveThroughDoor : public plansys2::BtActionNode<
-    nav2_msgs::action::NavigateToPose>
+class MoveThroughDoor : public plansys2::BtActionNode<nav2_msgs::action::NavigateToPose>
 {
 public:
   explicit MoveThroughDoor(
-    const std::string & xml_tag_name,
-    const std::string & action_name,
+    const std::string & xml_tag_name, const std::string & action_name,
     const BT::NodeConfiguration & conf);
 
   BT::NodeStatus on_tick() override;
@@ -42,10 +39,7 @@ public:
 
   static BT::PortsList providedPorts()
   {
-    return {
-      BT::InputPort<std::string>("goal"),
-      BT::InputPort<std::string>("door")
-    };
+    return {BT::InputPort<std::string>("goal"), BT::InputPort<std::string>("door")};
   }
 
 private:

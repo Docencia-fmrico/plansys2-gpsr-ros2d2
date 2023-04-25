@@ -26,19 +26,12 @@ namespace plansys2_gpsr_ros2d2
 class Drop : public BT::ActionNodeBase
 {
 public:
-  explicit Drop(
-    const std::string & xml_tag_name,
-    const BT::NodeConfiguration & conf);
+  explicit Drop(const std::string & xml_tag_name, const BT::NodeConfiguration & conf);
 
   void halt();
   BT::NodeStatus tick();
 
-  static BT::PortsList providedPorts()
-  {
-    return {
-      BT::InputPort<std::string>("object")
-    };
-  }
+  static BT::PortsList providedPorts() {return {BT::InputPort<std::string>("object")};}
 
 private:
   int counter_;

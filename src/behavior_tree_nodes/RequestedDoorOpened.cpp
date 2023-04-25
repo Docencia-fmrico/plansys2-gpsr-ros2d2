@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string>
-#include <iostream>
-
 #include "behavior_tree_nodes/RequestedDoorOpened.hpp"
+
+#include <iostream>
+#include <string>
 
 #include "behaviortree_cpp_v3/behavior_tree.h"
 
@@ -23,20 +23,14 @@ namespace plansys2_gpsr_ros2d2
 {
 
 RequestedDoorOpened::RequestedDoorOpened(
-  const std::string & xml_tag_name,
-  const BT::NodeConfiguration & conf)
+  const std::string & xml_tag_name, const BT::NodeConfiguration & conf)
 : BT::ActionNodeBase(xml_tag_name, conf), counter_(0)
 {
 }
 
-void
-RequestedDoorOpened::halt()
-{
-  std::cout << "RequestedDoorOpened halt" << std::endl;
-}
+void RequestedDoorOpened::halt() {std::cout << "RequestedDoorOpened halt" << std::endl;}
 
-BT::NodeStatus
-RequestedDoorOpened::tick()
+BT::NodeStatus RequestedDoorOpened::tick()
 {
   std::string door;
   getInput<std::string>("door", door);

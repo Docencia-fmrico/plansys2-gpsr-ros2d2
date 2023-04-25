@@ -15,45 +15,30 @@
 #include <plansys2_pddl_parser/Utils.h>
 
 #include <memory>
-
-#include "plansys2_msgs/msg/action_execution_info.hpp"
-#include "plansys2_msgs/msg/plan.hpp"
-
-#include "plansys2_domain_expert/DomainExpertClient.hpp"
-#include "plansys2_executor/ExecutorClient.hpp"
-#include "plansys2_planner/PlannerClient.hpp"
-#include "plansys2_problem_expert/ProblemExpertClient.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 
 #include "ament_index_cpp/get_package_share_directory.hpp"
-
 #include "cv_bridge/cv_bridge.h"
-#include <opencv2/opencv.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
+#include "plansys2_domain_expert/DomainExpertClient.hpp"
+#include "plansys2_executor/ExecutorClient.hpp"
+#include "plansys2_msgs/msg/action_execution_info.hpp"
+#include "plansys2_msgs/msg/plan.hpp"
+#include "plansys2_planner/PlannerClient.hpp"
+#include "plansys2_problem_expert/ProblemExpertClient.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 
 // Order types
-enum {
-  CLOSE = 0,
-  OPEN = 1,
-  OBJECT = 2, 
-  EMPTY = 3
-};
+enum { CLOSE = 0, OPEN = 1, OBJECT = 2, EMPTY = 3 };
 
 // Execution status
-enum {
-  SUCCESS = 0,
-  RUNNING = 1,
-  FAILURE = 2, 
-  NEWPLAN = 3, 
-  IDLE = 4
-};
+enum { SUCCESS = 0, RUNNING = 1, FAILURE = 2, NEWPLAN = 3, IDLE = 4 };
 
 // GUI positions
-enum {
-
+enum
+{
   A_BATHROOM = 0,
   A_KITCHEN = 1,
   A_BEDROOM1 = 2,
@@ -65,12 +50,14 @@ enum {
 };
 
 // Order structs
-typedef struct {
+typedef struct
+{
   std::string object;
   std::string room;
 } arrange_order;
 
-typedef struct {
+typedef struct
+{
   std::string door;
   std::string person;
   std::string object;
@@ -78,10 +65,10 @@ typedef struct {
 } human_request;
 
 // A mouse callback function to get the coordinates of the mouse click
-void mouse_callback(int event, int x, int y, int flags, void *param)
+void mouse_callback(int event, int x, int y, int flags, void * param)
 {
   if (event == cv::EVENT_LBUTTONDOWN) {
-    cv::Point *point = (cv::Point *)param;
+    cv::Point * point = (cv::Point *)param;
     point->x = x;
     point->y = y;
 
@@ -93,9 +80,7 @@ class Assemble : public rclcpp::Node
 {
 public:
   Assemble()
-  : rclcpp::Node("controller_node")
-  {
-  }
+  : rclcpp::Node("controller_node") {}
 
   bool init()
   {
@@ -116,7 +101,9 @@ public:
     doors_ = {"d1", "d2", "d3", "d4", "d5"};
     active_zones_ = {false, false, false, false, false, false, false};
 
-    auto gui_path_ = ament_index_cpp::get_package_share_directory("plansys2_gpsr_ros2d2") + "/img/gui.png";
+    auto gui_path_ =
+      ament_index_cpp::get_package_share_directory("plansys2_gpsr_ros2d2") + "/img/gui.png";
+
     gui_image_ = cv::imread(gui_path_, cv::IMREAD_COLOR);
 
     cv::namedWindow("R2D2 control panel", cv::WINDOW_AUTOSIZE);
@@ -127,7 +114,7 @@ public:
     return true;
   }
 
-  void generate_plan(std::vector <arrange_order> arrange_orders, human_request request)
+  void generate_plan(std::vector<arrange_order> arrange_orders, human_request request)
   {
     // Setup the new goal
     setup_goal(arrange_orders, request);
@@ -137,8 +124,8 @@ public:
     auto plan = planner_client_->getPlan(domain, problem);
 
     if (!plan.has_value()) {
-      std::cout << "Could not find plan to reach goal " <<
-        parser::pddl::toString(problem_expert_->getGoal()) << std::endl;
+      std::cout << "Could not find plan to reach goal "
+                << parser::pddl::toString(problem_expert_->getGoal()) << std::endl;
       return;
     }
 
@@ -163,24 +150,21 @@ public:
 
     // Add the human request goal
     if (request.type == OPEN) {
-
-      problem_expert_->addPredicate(plansys2::Predicate("(human_request_opendoor " + request.door + ")"));
+      problem_expert_->addPredicate(
+        plansys2::Predicate("(human_request_opendoor " + request.door + ")"));
       problem_expert_->removePredicate(plansys2::Predicate("(no_open_door_request r2d2)"));
       goal_expression += "(no_open_door_request r2d2) ";
-
     } else if (request.type == CLOSE) {
-
-      problem_expert_->addPredicate(plansys2::Predicate("(human_request_closedoor " + request.door + ")"));
+      problem_expert_->addPredicate(
+        plansys2::Predicate("(human_request_closedoor " + request.door + ")"));
       problem_expert_->removePredicate(plansys2::Predicate("(no_close_door_request r2d2)"));
       goal_expression += "(no_close_door_request r2d2) ";
-
     } else if (request.type == OBJECT) {
-
-      problem_expert_->addPredicate(plansys2::Predicate("(human_request_object granny " + request.object + ")"));
+      problem_expert_->addPredicate(
+        plansys2::Predicate("(human_request_object granny " + request.object + ")"));
       problem_expert_->removePredicate(plansys2::Predicate("(no_object_request r2d2)"));
       goal_expression += "(no_object_request r2d2) ";
-
-    }  
+    }
 
     goal_expression += ")";
     problem_expert_->setGoal(plansys2::Goal(goal_expression));
@@ -299,24 +283,22 @@ public:
     int status = RUNNING;
 
     if (executor_client_->execute_and_check_plan()) {  // Plan running
-    
       auto result = executor_client_->getResult();
-
       auto feedback = executor_client_->getFeedBack();
       for (const auto & action_feedback : feedback.action_execution_status) {
-        std::cout << "[" << action_feedback.action << " " <<
-          action_feedback.completion * 100.0 << "%]";
+        std::cout << "[" << action_feedback.action << " " << action_feedback.completion * 100.0
+                  << "%]";
       }
       std::cout << std::endl;
-
-    }
-    else {
+    } else {
       auto result = executor_client_->getResult();
 
-      if (result.value().success) status = SUCCESS;
-      else status = FAILURE;
+      if (result.value().success) {
+        status = SUCCESS;
+      } else {
+        status = FAILURE;
+      }
     }
-
     return status;
   }
 
@@ -324,9 +306,8 @@ public:
   {
     // Generate a goal if the system is IDLE
     if (status_ == NEWPLAN) {
-
       // Print a list of the arrange actions
-      for (int i = 0; i < arrange_orders_.size(); i++){
+      for (int i = 0; i < arrange_orders_.size(); i++) {
         std::string text = arrange_orders_[i].object + " -> " + arrange_orders_[i].room;
         std::cout << text << std::endl;
       }
@@ -335,23 +316,39 @@ public:
       generate_plan(arrange_orders_, yoda_request_);
       status_ = RUNNING;
 
+    } else if (status_ == RUNNING) {
+      status_ = plan_step();
+    } else if (status_ == SUCCESS || status_ == FAILURE) {
+      status_ = IDLE;
     }
-    else if (status_ == RUNNING) status_ = plan_step();
-    else if (status_ == SUCCESS || status_ == FAILURE) status_ = IDLE;
+  }
+
+  bool in_bounds(int x, int y, int x1, int x2, int y1, int y2)
+  {
+    return x > x1 && x < x2 && y > y1 && y < y2;
   }
 
   int clicked_zone_checker()
   {
     int zone = -1;
 
-    if (mouse_pos_.x > 139 && mouse_pos_.x < 220 && mouse_pos_.y > 180 && mouse_pos_.y < 256) zone = START;
-    else if (mouse_pos_.x > 347 && mouse_pos_.x < 701 && mouse_pos_.y > 233 && mouse_pos_.y < 274) zone = A_BATHROOM;
-    else if (mouse_pos_.x > 347 && mouse_pos_.x < 701 && mouse_pos_.y > 320 && mouse_pos_.y < 365) zone = A_KITCHEN;
-    else if (mouse_pos_.x > 347 && mouse_pos_.x < 701 && mouse_pos_.y > 410 && mouse_pos_.y < 455) zone = A_BEDROOM1;
-    else if (mouse_pos_.x > 347 && mouse_pos_.x < 701 && mouse_pos_.y > 500 && mouse_pos_.y < 545) zone = A_BEDROOM2;
-    else if (mouse_pos_.x > 984 && mouse_pos_.x < 1020 && mouse_pos_.y > 333 && mouse_pos_.y < 350) zone = OPEN_REQUEST;
-    else if (mouse_pos_.x > 985 && mouse_pos_.x < 1020 && mouse_pos_.y > 370 && mouse_pos_.y < 390) zone = CLOSE_REQUEST;
-    else if (mouse_pos_.x > 960 && mouse_pos_.x < 1042 && mouse_pos_.y > 406 && mouse_pos_.y < 426) zone = OBJECT_REQUEST;
+    if (in_bounds(mouse_pos_.x, mouse_pos_.y, 139, 220, 180, 256)) {
+      zone = START;
+    } else if (in_bounds(mouse_pos_.x, mouse_pos_.y, 347, 701, 233, 274)) {
+      zone = A_BATHROOM;
+    } else if (in_bounds(mouse_pos_.x, mouse_pos_.y, 347, 701, 320, 365)) {
+      zone = A_KITCHEN;
+    } else if (in_bounds(mouse_pos_.x, mouse_pos_.y, 347, 701, 410, 455)) {
+      zone = A_BEDROOM1;
+    } else if (in_bounds(mouse_pos_.x, mouse_pos_.y, 347, 701, 500, 545)) {
+      zone = A_BEDROOM2;
+    } else if (in_bounds(mouse_pos_.x, mouse_pos_.y, 984, 1020, 333, 350)) {
+      zone = OPEN_REQUEST;
+    } else if (in_bounds(mouse_pos_.x, mouse_pos_.y, 985, 1020, 370, 390)) {
+      zone = CLOSE_REQUEST;
+    } else if (in_bounds(mouse_pos_.x, mouse_pos_.y, 960, 1042, 406, 426)) {
+      zone = OBJECT_REQUEST;
+    }
 
     mouse_pos_.x = -1;
     mouse_pos_.y = -1;
@@ -359,47 +356,47 @@ public:
     return zone;
   }
 
-  void update_arrange_actions(int zone) 
+  void update_arrange_actions(int zone)
   {
-
     // Only update the arrange actions if the zone is valid
     if (zone != -1 && zone < 5) {
       active_zones_[zone] = !active_zones_[zone];
     }
 
     // Check for the active zones and draw a rectangle in the text
-    for (int i = 0; i < active_zones_.size(); i++){
+    for (int i = 0; i < active_zones_.size(); i++) {
       if (i == A_BATHROOM) {
-        if (active_zones_[i]){
+        if (active_zones_[i]) {
           // Draw a rectangle in the bathroom text
-          cv::rectangle(edited_gui_, cv::Point(347, 233), cv::Point(701, 274), cv::Scalar(0, 255, 0), 2);
+          cv::rectangle(
+            edited_gui_, cv::Point(347, 233), cv::Point(701, 274), cv::Scalar(0, 255, 0), 2);
 
           // Add the arrange order to the list
           arrange_orders_.push_back({"towel", "bathroom"});
         }
-      }
-      else if (i == A_KITCHEN) {
-        if (active_zones_[i]){
+      } else if (i == A_KITCHEN) {
+        if (active_zones_[i]) {
           // Draw a rectangle in the kitchen text
-          cv::rectangle(edited_gui_, cv::Point(347, 320), cv::Point(701, 365), cv::Scalar(0, 255, 0), 2);
+          cv::rectangle(
+            edited_gui_, cv::Point(347, 320), cv::Point(701, 365), cv::Scalar(0, 255, 0), 2);
 
           // Add the arrange order to the list
           arrange_orders_.push_back({"cutlery", "kitchen"});
         }
-      }
-      else if (i == A_BEDROOM1) {
-        if (active_zones_[i]){
+      } else if (i == A_BEDROOM1) {
+        if (active_zones_[i]) {
           // Draw a rectangle in the bedroom1 text
-          cv::rectangle(edited_gui_, cv::Point(347, 410), cv::Point(701, 455), cv::Scalar(0, 255, 0), 2);
+          cv::rectangle(
+            edited_gui_, cv::Point(347, 410), cv::Point(701, 455), cv::Scalar(0, 255, 0), 2);
 
           // Add the arrange order to the list
           arrange_orders_.push_back({"clothes", "bedroom"});
         }
-      }
-      else if (i == A_BEDROOM2) {
-        if (active_zones_[i]){
+      } else if (i == A_BEDROOM2) {
+        if (active_zones_[i]) {
           // Draw a rectangle in the bedroom2 text
-          cv::rectangle(edited_gui_, cv::Point(347, 500), cv::Point(701, 545), cv::Scalar(0, 255, 0), 2);
+          cv::rectangle(
+            edited_gui_, cv::Point(347, 500), cv::Point(701, 545), cv::Scalar(0, 255, 0), 2);
 
           // Add the arrange order to the list
           arrange_orders_.push_back({"photo", "bedroom"});
@@ -411,72 +408,70 @@ public:
   void update_yoda_request(int zone)
   {
     if (zone == OPEN_REQUEST) {
-
       active_zones_[zone] = true;
       active_zones_[CLOSE_REQUEST] = false;
       active_zones_[OBJECT_REQUEST] = false;
 
       // Update the clicked times
-      if (index_open_ < 4) index_open_++;
-      else index_open_ = 0;
-    }
-    else if (zone == CLOSE_REQUEST) {
-
+      if (index_open_ < 4) {
+        index_open_++;
+      } else {
+        index_open_ = 0;
+      }
+    } else if (zone == CLOSE_REQUEST) {
       active_zones_[zone] = true;
       active_zones_[OPEN_REQUEST] = false;
       active_zones_[OBJECT_REQUEST] = false;
 
       // Update the clicked times
-      if (index_close_ < 4) index_close_++;
-      else index_close_ = 0;
-    }
-    else if (zone == OBJECT_REQUEST) {
-
+      if (index_close_ < 4) {
+        index_close_++;
+      } else {
+        index_close_ = 0;
+      }
+    } else if (zone == OBJECT_REQUEST) {
       active_zones_[zone] = true;
       active_zones_[OPEN_REQUEST] = false;
       active_zones_[CLOSE_REQUEST] = false;
 
       // Update the clicked times
-      if (index_object_ < 5) index_object_++;
-      else index_object_ = 0;
+      if (index_object_ < 5) {
+        index_object_++;
+      } else {
+        index_object_ = 0;
+      }
     }
 
-    for (int i = 4; i < active_zones_.size(); i++){
-
+    for (int i = 4; i < active_zones_.size(); i++) {
       if (i == OPEN_REQUEST) {
-        
         // Generate a text in the image representing the door
-        cv::putText(edited_gui_, doors_[index_open_], cv::Point(992, 345), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 2);
+        cv::putText(
+          edited_gui_, doors_[index_open_], cv::Point(992, 345), cv::FONT_HERSHEY_SIMPLEX, 0.5,
+          cv::Scalar(0, 0, 255), 2);
 
-        if (active_zones_[i]){
-
+        if (active_zones_[i]) {
           yoda_request_.type = OPEN;
           yoda_request_.door = doors_[index_open_];
-
         }
-      }
-      else if (i == CLOSE_REQUEST) {
-
+      } else if (i == CLOSE_REQUEST) {
         // Generate a text in the image representing the door
-        cv::putText(edited_gui_, doors_[index_close_], cv::Point(994, 385), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 2);
+        cv::putText(
+          edited_gui_, doors_[index_close_], cv::Point(994, 385), cv::FONT_HERSHEY_SIMPLEX, 0.5,
+          cv::Scalar(255, 0, 0), 2);
 
-        if (active_zones_[i]){
-
+        if (active_zones_[i]) {
           yoda_request_.type = CLOSE;
           yoda_request_.door = doors_[index_close_];
-  
         }
-      }
-      else if (i == OBJECT_REQUEST) {
-
+      } else if (i == OBJECT_REQUEST) {
         // Generate a text in the image representing the door
-        cv::putText(edited_gui_, objects_[index_object_], cv::Point(970, 420), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);
+        cv::putText(
+          edited_gui_, objects_[index_object_], cv::Point(970, 420), cv::FONT_HERSHEY_SIMPLEX, 0.5,
+          cv::Scalar(0, 255, 0), 2);
 
-        if (active_zones_[i]){
-
+        if (active_zones_[i]) {
           yoda_request_.type = OBJECT;
           yoda_request_.object = objects_[index_object_];
-
         }
       }
     }
@@ -514,11 +509,11 @@ private:
   cv::Mat gui_image_;
   cv::Mat edited_gui_;
   cv::Point mouse_pos_;
-  std::vector <std::string> objects_;
-  std::vector <std::string> doors_;
-  std::vector <arrange_order> arrange_orders_;
+  std::vector<std::string> objects_;
+  std::vector<std::string> doors_;
+  std::vector<arrange_order> arrange_orders_;
   human_request yoda_request_;
-  std::vector <bool> active_zones_;
+  std::vector<bool> active_zones_;
   int index_open_;
   int index_close_;
   int index_object_;
@@ -529,14 +524,12 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   auto node = std::make_shared<Assemble>();
 
-
   // Init the world knowledge
   node->init();
 
   rclcpp::Rate rate(5);
 
   while (rclcpp::ok()) {
-
     // Spin the node
     rclcpp::spin_some(node->get_node_base_interface());
 

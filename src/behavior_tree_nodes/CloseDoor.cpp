@@ -12,35 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string>
-#include <iostream>
-
 #include "behavior_tree_nodes/CloseDoor.hpp"
+
+#include <iostream>
+#include <string>
 
 #include "behaviortree_cpp_v3/behavior_tree.h"
 
 namespace plansys2_gpsr_ros2d2
 {
 
-CloseDoor::CloseDoor(
-  const std::string & xml_tag_name,
-  const BT::NodeConfiguration & conf)
+CloseDoor::CloseDoor(const std::string & xml_tag_name, const BT::NodeConfiguration & conf)
 : BT::ActionNodeBase(xml_tag_name, conf), counter_(0)
 {
 }
 
-void
-CloseDoor::halt()
-{
-  std::cout << "CloseDoor halt" << std::endl;
-}
+void CloseDoor::halt() {std::cout << "CloseDoor halt" << std::endl;}
 
-BT::NodeStatus
-CloseDoor::tick()
+BT::NodeStatus CloseDoor::tick()
 {
   std::string door;
   getInput<std::string>("door", door);
-  std::cout << "CloseDoor tick " << counter_ << std::endl;
+  std::cout << "Closing door: " << door << std::endl;
 
   if (counter_++ < 5) {
     return BT::NodeStatus::RUNNING;
