@@ -47,19 +47,21 @@ enum {
   SUCCESS = 0,
   RUNNING = 1,
   FAILURE = 2, 
-  NEWPLAN = 3
+  NEWPLAN = 3, 
+  IDLE = 4
 };
 
 // GUI positions
 enum {
-  START = 0,
-  A_BATHROOM = 1,
-  A_KITCHEN = 2,
-  A_BEDROOM1 = 3,
-  A_BEDROOM2 = 4,
-  OPEN_REQUEST = 5,
-  CLOSE_REQUEST = 6,
-  OBJECT_REQUEST = 7
+
+  A_BATHROOM = 0,
+  A_KITCHEN = 1,
+  A_BEDROOM1 = 2,
+  A_BEDROOM2 = 3,
+  OPEN_REQUEST = 4,
+  CLOSE_REQUEST = 5,
+  OBJECT_REQUEST = 6,
+  START = 7,
 };
 
 // Order structs
@@ -102,13 +104,18 @@ public:
 
     init_basic_knowledge();
 
+    // Setp the objects and the doors
+    std::vector<std::string> objects = {"towel", "cutlery", "milk", "medicine", "clothes", "photo"};
+    std::vector<std::string> doors = {"d1", "d2", "d3", "d4", "d5"};
+    active_zones_ = {false, false, false, false};
+
     auto gui_path_ = ament_index_cpp::get_package_share_directory("plansys2_gpsr_ros2d2") + "/img/gui.png";
     gui_image_ = cv::imread(gui_path_, cv::IMREAD_COLOR);
 
     cv::namedWindow("R2D2 control panel", cv::WINDOW_AUTOSIZE);
     cv::setMouseCallback("R2D2 control panel", mouse_callback, &mouse_pos_);
 
-    status_ = NEWPLAN;
+    status_ = IDLE;
 
     return true;
   }
@@ -312,16 +319,22 @@ public:
     if (status_ == NEWPLAN) {
 
       // This info will come from the GUI
-      std::vector <arrange_order> arrange_orders;
-      arrange_orders.push_back({"towel", "kitchen"});
       human_request request;
-      request.type = OPEN;
-      request.door = "d1";
-      generate_plan(arrange_orders, request);
+      request.type = EMPTY;
+
+      // Print a list of the arrange actions
+      for (int i = 0; i < arrange_orders_.size(); i++){
+        std::string text = arrange_orders_[i].object + " -> " + arrange_orders_[i].room;
+        std::cout << text << std::endl;
+      }
+
+      // Generate a plan
+      generate_plan(arrange_orders_, request);
       status_ = RUNNING;
 
     }
     else if (status_ == RUNNING) status_ = plan_step();
+    else if (status_ == SUCCESS || status_ == FAILURE) status_ = IDLE;
   }
 
   int clicked_zone_checker()
@@ -337,17 +350,80 @@ public:
     else if (mouse_pos_.x > 985 && mouse_pos_.x < 1020 && mouse_pos_.y > 370 && mouse_pos_.y < 390) zone = CLOSE_REQUEST;
     else if (mouse_pos_.x > 960 && mouse_pos_.x < 1042 && mouse_pos_.y > 406 && mouse_pos_.y < 426) zone = OBJECT_REQUEST;
 
+    mouse_pos_.x = -1;
+    mouse_pos_.y = -1;
+
     return zone;
+  }
+
+  void update_arrange_actions(int zone) 
+  {
+    if (zone != -1) {
+      active_zones_[zone] = !active_zones_[zone];
+      std::cout << "The zone " << zone << " is now " << active_zones_[zone] << std::endl;
+    }
+
+    // Check for the active zones and draw a rectangle in the text
+    for (int i = 0; i < active_zones_.size(); i++){
+      if (i == A_BATHROOM) {
+        if (active_zones_[i]){
+          // Draw a rectangle in the bathroom text
+          cv::rectangle(edited_gui_, cv::Point(347, 233), cv::Point(701, 274), cv::Scalar(0, 255, 0), 2);
+
+          // Add the arrange order to the list
+          arrange_orders_.push_back({"towel", "bathroom"});
+        }
+      }
+      else if (i == A_KITCHEN) {
+        if (active_zones_[i]){
+          // Draw a rectangle in the kitchen text
+          cv::rectangle(edited_gui_, cv::Point(347, 320), cv::Point(701, 365), cv::Scalar(0, 255, 0), 2);
+
+          // Add the arrange order to the list
+          arrange_orders_.push_back({"cutlery", "kitchen"});
+        }
+      }
+      else if (i == A_BEDROOM1) {
+        if (active_zones_[i]){
+          // Draw a rectangle in the bedroom1 text
+          cv::rectangle(edited_gui_, cv::Point(347, 410), cv::Point(701, 455), cv::Scalar(0, 255, 0), 2);
+
+          // Add the arrange order to the list
+          arrange_orders_.push_back({"clothes", "bedroom"});
+        }
+      }
+      else if (i == A_BEDROOM2) {
+        if (active_zones_[i]){
+          // Draw a rectangle in the bedroom2 text
+          cv::rectangle(edited_gui_, cv::Point(347, 500), cv::Point(701, 545), cv::Scalar(0, 255, 0), 2);
+
+          // Add the arrange order to the list
+          arrange_orders_.push_back({"photo", "bedroom"});
+        }
+      }
+    }
   }
 
   void gui_updater()
   {
+    edited_gui_ = gui_image_.clone();
+
     // Check the mouse position
     int zone = clicked_zone_checker();
 
-    std::cout << "Zone: " << zone << std::endl;
+    // Update the list of arrange actions
+    update_arrange_actions(zone);
 
-    cv::imshow("R2D2 control panel", gui_image_);
+    // Check for start condition
+    if (zone == START && status_ == IDLE) {
+      if (arrange_orders_.size() > 0) {
+        std::cout << "Start condition" << std::endl;
+        status_ = NEWPLAN;
+      }
+      else std::cout << "No arrange actions selected" << std::endl;
+    }
+
+    cv::imshow("R2D2 control panel", edited_gui_);
     cv::waitKey(1);
   }
 
@@ -358,7 +434,12 @@ private:
   std::shared_ptr<plansys2::ExecutorClient> executor_client_;
   int status_;
   cv::Mat gui_image_;
+  cv::Mat edited_gui_;
   cv::Point mouse_pos_;
+  std::vector <std::string> objects_;
+  std::vector <std::string> doors_;
+  std::vector <arrange_order> arrange_orders_;
+  std::vector <bool> active_zones_;
 };
 
 int main(int argc, char ** argv)
@@ -381,7 +462,7 @@ int main(int argc, char ** argv)
     node->gui_updater();
 
     // Spin the plan control
-    // node->execution_control();
+    node->execution_control();
 
     // Sleep as needed
     rate.sleep();
