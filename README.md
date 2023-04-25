@@ -94,7 +94,7 @@ Before starting the mapping process, it was necessary to solve a known bug in th
   
 To implement the fix, the user should open the configuration file 'turtlebot3_lds_2d.lua' located at '/opt/ros/humble/share/turtlebot3_cartographer/config/' using a text editor with sudo privileges (e.g., 'sudo vim /opt/ros/humble/share/turtlebot3_cartographer/config/turtlebot3_lds_2d.lua') and change the mentioned parameters to 0.5.
 
-## Tests
+### Tests
 
 To be able to analyze if our code is correct and runs as desired, we have created a series.
 
