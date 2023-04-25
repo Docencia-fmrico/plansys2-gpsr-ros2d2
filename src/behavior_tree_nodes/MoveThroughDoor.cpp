@@ -47,7 +47,6 @@ MoveThroughDoor::MoveThroughDoor(
 
   // Get waypoint coordinates
   if (node->has_parameter("waypoints")) {
-
     std::vector<std::string> wp_names;
     node->get_parameter_or("waypoints", wp_names, {});
 

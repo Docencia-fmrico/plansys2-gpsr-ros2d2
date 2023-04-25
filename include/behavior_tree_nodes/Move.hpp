@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PLANSYS2_GPSR_ROS2D2__BEHAVIOR_TREE_NODES__MOVE_HPP_
-#define PLANSYS2_GPSR_ROS2D2__BEHAVIOR_TREE_NODES__MOVE_HPP_
+#ifndef BEHAVIOR_TREE_NODES__MOVE_HPP_
+#define BEHAVIOR_TREE_NODES__MOVE_HPP_
 
 #include <string>
 #include <map>
@@ -53,4 +53,4 @@ private:
 
 }  // namespace plansys2_gpsr_ros2d2
 
-#endif  // PLANSYS2_GPSR_ROS2D2__BEHAVIOR_TREE_NODES__MOVE_HPP_
+#endif  // BEHAVIOR_TREE_NODES__MOVE_HPP_

@@ -8,7 +8,7 @@
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONdITIONS OF ANY KINd, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
@@ -198,7 +198,7 @@ public:
     problem_expert_->addInstance(plansys2::Instance{"kitchen", "room"});
     problem_expert_->addInstance(plansys2::Instance{"living_room", "room"});
     problem_expert_->addInstance(plansys2::Instance{"bathroom", "room"});
-    problem_expert_->addInstance(plansys2::Instance{"bedroom", "room"});  
+    problem_expert_->addInstance(plansys2::Instance{"bedroom", "room"});
     problem_expert_->addInstance(plansys2::Instance{"corridor", "room"});
 
     // Init the doors
@@ -240,7 +240,7 @@ public:
     problem_expert_->addPredicate(plansys2::Predicate("(object_at clothes bathroom)"));
     problem_expert_->addPredicate(plansys2::Predicate("(object_at photo living_room)"));
 
-    // Connections 
+    // Connections
     // kitchen <-> living_room
     problem_expert_->addPredicate(plansys2::Predicate("(connected kitchen d1_k)"));
     problem_expert_->addPredicate(plansys2::Predicate("(connected d1_k kitchen)"));
@@ -296,13 +296,15 @@ public:
 
   int plan_step()
   {
-    int status;
+    if (!executor_client_->execute_and_check_plan()) {  // Plan finished
+      auto result = executor_client_->getResult();
 
-    if (executor_client_->execute_and_check_plan()) {  // Plan running successfully
-      
-      status = RUNNING;
-
-      // Feedback needs rewrite
+      if (result.value().success) {
+        RCLCPP_INFO(get_logger(), "Plan succesfully finished");
+      } else {
+        RCLCPP_ERROR(get_logger(), "Plan finished with error");
+      }
+    } else {
       auto feedback = executor_client_->getFeedBack();
       for (const auto & action_feedback : feedback.action_execution_status) {
         std::cout << "[" << action_feedback.action << " " <<
