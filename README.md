@@ -149,7 +149,9 @@ And finnaly run it:
 
 $ ros2 run plansys2_gpsr_ros2d2 controller_node.cpp
 
-## Working examples
+## Working example
+
+https://youtu.be/TuEe4allwSE
 
 ## Instructions
 En grupos de 4, haced una aplicación en ROS 2 usando PlanSys2 que use el dominio de la [Práctica 3](https://github.com/Docencia-fmrico/planning-exercise/blob/main/README.md). El robot debe poder realizar en un simulador, navegando con Nav2, goals similares a los siguientes:
