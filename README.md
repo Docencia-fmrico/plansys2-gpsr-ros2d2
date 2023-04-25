@@ -14,7 +14,17 @@ Ejercicio 4 de Planificación y Sistemas Cognitivos 2023
 
 ## Introduction
 
-The objective of this project is to make a robot (in this case a TurtleBot3 Burger) to execute a plan to order a house and giving priority to the hose owner instructions.
+The main objective of this project is to equip a TurtleBot3 Burger with planification capabilities, enabling it to carry out various domestic activities. This is achieved by implementing the PlanSys2 stack and using Behavior Trees to represent each of the robot's actions.
+
+The specific problem at hand involves assisting a person with various tasks within their home, such as placing objects in designated locations, opening/closing doors, and retrieving objects for the person.
+
+Given the nature of the problem, tasks can be classified into two distinct priority levels:
+
+Human tasks - these tasks are specifically requested by the person and take priority over all other tasks. Examples include retrieving objects for the person or opening/closing doors as requested.
+
+Other tasks - these tasks are secondary in priority and include activities such as moving objects, arranging objects in specific locations, moving the robot to specific locations, and opening/closing doors when not specifically requested by the person.
+
+In order to successfully execute the tasks, the robot will need to generate valid plans by selecting appropriate actions from the available Behavior Trees. This will require usage of PlanSys2.
 
 ## About
 
