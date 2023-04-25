@@ -24,14 +24,42 @@
 #include "plansys2_planner/PlannerClient.hpp"
 #include "plansys2_problem_expert/ProblemExpertClient.hpp"
 
+#include "ament_index_cpp/get_package_share_directory.hpp"
+
+#include "cv_bridge/cv_bridge.h"
+#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 
+// Order types
 enum {
   CLOSE = 0,
   OPEN = 1,
   OBJECT = 2, 
   EMPTY = 3
+};
+
+// Execution status
+enum {
+  SUCCESS = 0,
+  RUNNING = 1,
+  FAILURE = 2, 
+  NEWPLAN = 3
+};
+
+// GUI positions
+enum {
+  START = 0,
+  A_BATHROOM = 1,
+  A_KITCHEN = 2,
+  A_BEDROOM1 = 3,
+  A_BEDROOM2 = 4,
+  OPEN_REQUEST = 5,
+  CLOSE_REQUEST = 6,
+  OBJECT_REQUEST = 7
 };
 
 // Order structs
@@ -46,6 +74,16 @@ typedef struct {
   std::string object;
   int type;
 } human_request;
+
+// A mouse callback function to get the coordinates of the mouse click
+void mouse_callback(int event, int x, int y, int flags, void *param)
+{
+  if (event == cv::EVENT_LBUTTONDOWN) {
+    cv::Point *point = (cv::Point *)param;
+    point->x = x;
+    point->y = y;
+  }
+}
 
 class Assemble : public rclcpp::Node
 {
@@ -63,6 +101,14 @@ public:
     executor_client_ = std::make_shared<plansys2::ExecutorClient>();
 
     init_basic_knowledge();
+
+    auto gui_path_ = ament_index_cpp::get_package_share_directory("plansys2_gpsr_ros2d2") + "/img/gui.png";
+    gui_image_ = cv::imread(gui_path_, cv::IMREAD_COLOR);
+
+    cv::namedWindow("R2D2 control panel", cv::WINDOW_AUTOSIZE);
+    cv::setMouseCallback("R2D2 control panel", mouse_callback, &mouse_pos_);
+
+    status_ = NEWPLAN;
 
     return true;
   }
@@ -234,26 +280,75 @@ public:
     problem_expert_->addPredicate(plansys2::Predicate("(door_open d5)"));
   }
 
-  void step()
+  int plan_step()
   {
-    if (!executor_client_->execute_and_check_plan()) {  // Plan finished
-      auto result = executor_client_->getResult();
+    int status;
 
-      if (result.value().success) {
-        RCLCPP_INFO(get_logger(), "Plan succesfully finished");
-      } else {
-        RCLCPP_ERROR(get_logger(), "Plan finished with error");
-      }
-    }
-    else {
+    if (executor_client_->execute_and_check_plan()) {  // Plan running successfully
+      
+      status = RUNNING;
+
+      // Feedback needs rewrite
       auto feedback = executor_client_->getFeedBack();
-
       for (const auto & action_feedback : feedback.action_execution_status) {
         std::cout << "[" << action_feedback.action << " " <<
           action_feedback.completion * 100.0 << "%]";
       }
       std::cout << std::endl;
     }
+    else {
+      auto result = executor_client_->getResult();
+
+      if (result.value().success) status = SUCCESS;
+      else status = FAILURE;
+    }
+
+    return status;
+  }
+
+  void execution_control()
+  {
+    // Generate a goal if the system is IDLE
+    if (status_ == NEWPLAN) {
+
+      // This info will come from the GUI
+      std::vector <arrange_order> arrange_orders;
+      arrange_orders.push_back({"towel", "kitchen"});
+      human_request request;
+      request.type = OPEN;
+      request.door = "d1";
+      generate_plan(arrange_orders, request);
+      status_ = RUNNING;
+
+    }
+    else if (status_ == RUNNING) status_ = plan_step();
+  }
+
+  int clicked_zone_checker()
+  {
+    int zone = -1;
+
+    if (mouse_pos_.x > 139 && mouse_pos_.x < 220 && mouse_pos_.y > 180 && mouse_pos_.y < 256) zone = START;
+    else if (mouse_pos_.x > 347 && mouse_pos_.x < 701 && mouse_pos_.y > 233 && mouse_pos_.y < 274) zone = A_BATHROOM;
+    else if (mouse_pos_.x > 347 && mouse_pos_.x < 701 && mouse_pos_.y > 320 && mouse_pos_.y < 365) zone = A_KITCHEN;
+    else if (mouse_pos_.x > 347 && mouse_pos_.x < 701 && mouse_pos_.y > 410 && mouse_pos_.y < 455) zone = A_BEDROOM1;
+    else if (mouse_pos_.x > 347 && mouse_pos_.x < 701 && mouse_pos_.y > 500 && mouse_pos_.y < 545) zone = A_BEDROOM2;
+    else if (mouse_pos_.x > 984 && mouse_pos_.x < 1020 && mouse_pos_.y > 333 && mouse_pos_.y < 350) zone = OPEN_REQUEST;
+    else if (mouse_pos_.x > 985 && mouse_pos_.x < 1020 && mouse_pos_.y > 370 && mouse_pos_.y < 390) zone = CLOSE_REQUEST;
+    else if (mouse_pos_.x > 960 && mouse_pos_.x < 1042 && mouse_pos_.y > 406 && mouse_pos_.y < 426) zone = OBJECT_REQUEST;
+
+    return zone;
+  }
+
+  void gui_updater()
+  {
+    // Check the mouse position
+    int zone = clicked_zone_checker();
+
+    std::cout << "Zone: " << zone << std::endl;
+
+    cv::imshow("R2D2 control panel", gui_image_);
+    cv::waitKey(1);
   }
 
 private:
@@ -261,6 +356,9 @@ private:
   std::shared_ptr<plansys2::PlannerClient> planner_client_;
   std::shared_ptr<plansys2::ProblemExpertClient> problem_expert_;
   std::shared_ptr<plansys2::ExecutorClient> executor_client_;
+  int status_;
+  cv::Mat gui_image_;
+  cv::Point mouse_pos_;
 };
 
 int main(int argc, char ** argv)
@@ -268,15 +366,9 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   auto node = std::make_shared<Assemble>();
 
+
   // Init the world knowledge
   node->init();
-
-  // This info will come from the GUI
-  std::vector <arrange_order> arrange_orders;
-  arrange_orders.push_back({"towel", "bathroom"});
-  human_request request;
-  request.type = EMPTY;
-  node->generate_plan(arrange_orders, request);
 
   rclcpp::Rate rate(5);
 
@@ -285,8 +377,11 @@ int main(int argc, char ** argv)
     // Spin the node
     rclcpp::spin_some(node->get_node_base_interface());
 
-    // Execute one step
-    node->step();
+    // Update the GUI
+    node->gui_updater();
+
+    // Spin the plan control
+    // node->execution_control();
 
     // Sleep as needed
     rate.sleep();

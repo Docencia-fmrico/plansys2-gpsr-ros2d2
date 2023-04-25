@@ -15,6 +15,12 @@ find_package(plansys2_problem_expert REQUIRED)
 find_package(plansys2_pddl_parser REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(plansys2_bt_actions REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(cv_bridge REQUIRED)
+
+include_directories(${OpenCV_INCLUDE_DIRS})
+link_directories(${OpenCV_LIBRARY_DIRS})
+add_definitions(${OpenCV_DEFINITIONS})
 
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
@@ -34,6 +40,8 @@ set(dependencies
   plansys2_pddl_parser
   ament_index_cpp
   plansys2_bt_actions
+  OpenCV
+  cv_bridge
 )
 
 include_directories(include)
@@ -67,7 +75,7 @@ endforeach()
 add_executable(controller_node src/controller_node.cpp)
 ament_target_dependencies(controller_node ${dependencies})
 
-install(DIRECTORY launch pddl behavior_trees_xml map config DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch pddl behavior_trees_xml map img config DESTINATION share/${PROJECT_NAME})
 
 install(TARGETS
   controller_node
