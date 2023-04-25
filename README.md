@@ -73,11 +73,17 @@ To perform the mapping process, we followed the conventional steps. However, ins
 https://github.com/OscarMrZ/tb3_webots_minimal
 
 Following this steps:
+
 $ export TURTLEBOT3_MODEL=burger
-$ ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True
+
+$ ros2 launch tb3_webots_minimal robot_launch.py mapper:=true rviz:=true
+
 $ export TURTLEBOT3_MODEL=burger
+
 $ roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping
+
 $ export TURTLEBOT3_MODEL=burger
+
 $ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
 
 And afterwards saving the map.
@@ -92,8 +98,24 @@ To implement the fix, the user should open the configuration file 'turtlebot3_ld
 
 ## Usage
 
-### Installation
+### Installation and launching
 
+First clone the next git repository: https://github.com/PlanSys2/ros2_planning_system.git
+
+Afterwards you should clone that allows to launch the webots simulator: https://github.com/OscarMrZ/tb3_webots_minimal.git
+In order to oppen the simulation launch: 
+
+$ ros2 launch tb3_webots_minimal robot_launch.py
+
+Next launch from this repository:
+
+$ ros2 launch plansys2_gpsr_ros2d2 robot_bringup_launch.py
+
+$ ros2 launch plansys2_gpsr_ros2d2 plansys_bringup_launch.py
+
+And finnaly run it:
+
+$ ros2 run plansys2_gpsr_ros2d2 controller_node.cpp
 
 ## Working examples
 
