@@ -94,7 +94,29 @@ Before starting the mapping process, it was necessary to solve a known bug in th
   
 To implement the fix, the user should open the configuration file 'turtlebot3_lds_2d.lua' located at '/opt/ros/humble/share/turtlebot3_cartographer/config/' using a text editor with sudo privileges (e.g., 'sudo vim /opt/ros/humble/share/turtlebot3_cartographer/config/turtlebot3_lds_2d.lua') and change the mentioned parameters to 0.5.
 
-### Tests
+## Tests
+
+To be able to analyze if our code is correct and runs as desired, we have created a series.
+
+#### Run test
+
+In order to check if a node does not fail, we create its behaviur tree, blackboard and run it a total of 5 times. If the NodeStatus is success at the end of the five runs, the test is passed.
+
+The following nodes have been subjectd to this test: close_door, open_door, pick, drop, request_opened, request_closed, give_object and arrange_object.
+
+```
+  bool finish = false;
+  BT::NodeStatus status;
+  for (int i = 0; i < 5; i++) {
+    while (!finish && rclcpp::ok()) {
+      status = tree.rootNode()->executeTick();
+      finish = status != BT::NodeStatus::RUNNING;
+      rate.sleep();
+    }
+    ASSERT_TRUE(status == BT::NodeStatus::SUCCESS);
+  }
+```
+
 
 ## Usage
 
