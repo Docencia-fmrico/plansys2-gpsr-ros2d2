@@ -296,21 +296,19 @@ public:
 
   int plan_step()
   {
-    if (!executor_client_->execute_and_check_plan()) {  // Plan finished
+    int status = RUNNING;
+
+    if (executor_client_->execute_and_check_plan()) {  // Plan running
+    
       auto result = executor_client_->getResult();
 
-      if (result.value().success) {
-        RCLCPP_INFO(get_logger(), "Plan succesfully finished");
-      } else {
-        RCLCPP_ERROR(get_logger(), "Plan finished with error");
-      }
-    } else {
       auto feedback = executor_client_->getFeedBack();
       for (const auto & action_feedback : feedback.action_execution_status) {
         std::cout << "[" << action_feedback.action << " " <<
           action_feedback.completion * 100.0 << "%]";
       }
       std::cout << std::endl;
+
     }
     else {
       auto result = executor_client_->getResult();
