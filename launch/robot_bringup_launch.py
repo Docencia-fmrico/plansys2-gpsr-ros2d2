@@ -38,7 +38,7 @@ def generate_launch_description():
             'map',
             'big_house.yaml'))
 
-    param_file_name = "burger_config.yaml"
+    param_file_name = 'burger_config.yaml'
     param_dir = LaunchConfiguration(
         'params_file',
         default=os.path.join(
