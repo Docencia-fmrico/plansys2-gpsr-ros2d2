@@ -51,16 +51,32 @@ The class is responsible for moving the robot to a specific location using the R
 
 ### World
 
-Seeing how many problems gazebo and the code from pal robotics were giving we decided to do this project using Webots and the TurtleBot3 Burger. We also wanted to use the knowledge we have from other classes on this simulator so we built our own world:
+After careful consideration of the limitations posed by Gazebo and the code from Pal Robotics, we made the decision to switch to Webots and adopt the TurtleBot3 Burger for our project. This allowed us to leverage our existing knowledge and experience with the simulator, which we used to create a custom world tailored to our needs. Our aim was to maximize the capabilities of the platform and optimize our workflow, while also ensuring that we could achieve our project goals in a timely and efficient manner. Through this approach, we were able to overcome the challenges we faced and deliver a high-quality solution that met the project requirements:
 
 ![alt text](https://github.com/Docencia-fmrico/plansys2-gpsr-ros2d2/blob/main/img/House_img.png)
 
-We also mapped it in order to navigate it:
+In addition to creating our own world, we mapped it out to enable seamless navigation.
 
 ![alt text](https://github.com/Docencia-fmrico/plansys2-gpsr-ros2d2/blob/main/img/big_house_tags.png)
 
-In order to map it we followd the normal steps, but instead of launching gazebo we used this other package to launch the simulation:
+To perform the mapping process, we followed the conventional steps. However, instead of launching Gazebo, we utilized an alternate package to initiate the simulation:
 https://github.com/OscarMrZ/tb3_webots_minimal
+
+Following this steps:
+$ export TURTLEBOT3_MODEL=burger
+$ ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True
+$ export TURTLEBOT3_MODEL=burger
+$ roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping
+$ export TURTLEBOT3_MODEL=burger
+$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+
+And afterwards saving the map.
+
+Before starting the mapping process, it was necessary to solve a known bug in the Cartographer package. The bug occurs when two laser messages are received at the same time, which causes issues with the update frequency of certain parameters. In order to fix this issue, the update frequency of 'odometry_sampling_ratio', 'imu_sampling_ratio', and 'rangefinder_sampling_ratio' parameters must be set to 0.5. 
+
+  [https://groups.google.com/g/google-cartographer/c/b-NiyoRky2c?pli=1]
+  
+To implement the fix, the user should open the configuration file 'turtlebot3_lds_2d.lua' located at '/opt/ros/humble/share/turtlebot3_cartographer/config/' using a text editor with sudo privileges (e.g., 'sudo vim /opt/ros/humble/share/turtlebot3_cartographer/config/turtlebot3_lds_2d.lua') and change the mentioned parameters to 0.5.
 
 ### Tests
 
