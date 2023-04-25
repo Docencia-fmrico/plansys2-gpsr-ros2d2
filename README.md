@@ -27,15 +27,25 @@ The planning problem involves navigating a robot through a set of rooms and door
 The domain includes these durative actions:
 
 **move_through_door**: moves a robot from one location to another through a door.
+
 **move**: moves a robot from one location to another.
+
 **open_door**: opens a door.
+
 **requested_door_opened**: opens a door that a human has requested to be opened.
+
 **close_door**: closes a door.
+
 **requested_door_closed**: closes a door that a human has requested to be closed.
+
 **pick**: picks up an object.
+
 **drop**: drops an object.
+
 **give_object**: gives an object to a person.
+
 **arrange_object**: arranges an object in a room.
+
 
 Each node has a counter programmed into its tick function that causes the node to continue returning the status RUNNING until it has been ticked 5 times. This simulates the duration of the action.
 
