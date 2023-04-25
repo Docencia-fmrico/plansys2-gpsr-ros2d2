@@ -93,7 +93,6 @@ private:
   }
 };
 
-/*
 TEST(bt_action, move_btn)
 {
   auto node = rclcpp::Node::make_shared("ros2d2_move_bt_node");
@@ -141,7 +140,6 @@ TEST(bt_action, move_btn)
 
   ASSERT_TRUE(status == BT::NodeStatus::SUCCESS);
 }
-*/
 
 TEST(bt_action, close_btn)
 {
