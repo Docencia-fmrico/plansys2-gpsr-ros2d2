@@ -20,6 +20,35 @@ The objective of this project is to make a robot (in this case a TurtleBot3 Burg
 
 ### Planing
 
+The code implements a node for controlling the execution of a planning problem using the Plansys2 framework. The node initializes a set of domain and problem experts, planner and executor clients, and defines a set of initial state and goal predicates.
+
+The planning problem involves navigating a robot through a set of rooms and doors to deliver an object to a person in a specific room, while satisfying a set of constraints and goals. The node uses the Plansys2 framework to generate a plan for achieving the goal state and then executes the plan by calling the executor client. The node runs continuously and monitors the status of the plan execution until completion, at which point it outputs a success message or an error message if the execution failed.
+
+The domain includes these durative actions:
+
+**move_through_door**: moves a robot from one location to another through a door.
+**move**: moves a robot from one location to another.
+**open_door**: opens a door.
+**requested_door_opened**: opens a door that a human has requested to be opened.
+**close_door**: closes a door.
+**requested_door_closed**: closes a door that a human has requested to be closed.
+**pick**: picks up an object.
+**drop**: drops an object.
+**give_object**: gives an object to a person.
+**arrange_object**: arranges an object in a room.
+
+Each node has a counter programmed into its tick function that causes the node to continue returning the status RUNNING until it has been ticked 5 times. This simulates the duration of the action.
+
+##### move_through_door
+
+The MoveThroughDoor class inherits from plansys2::BtActionNode, which is a base class for Behavior Tree nodes that represent actions that can be executed by the robot. The constructor of the MoveThroughDoor class initializes some variables related to the waypoints that the robot needs to follow, as well as the door that needs to be opened to reach the final goal. These waypoints refer to locations near each door that are specifically designated for opening the door. These locations are unique to each door and cannot be found anywhere else.
+
+The on_tick() method returns RUNNING as long as the action is being executed. When the on_success() method is called, it returns SUCCESS, indicating that the action has been completed successfully.
+
+##### move
+
+The class is responsible for moving the robot to a specific location using the ROS Navigation2 stack. The Move class inherits from the BtActionNode class and is registered as a behavior tree node. The constructor initializes the Move class and retrieves the parameters for the waypoints. The on_tick function handles moving the robot to the specified goal by setting the goal pose and returning a running status. The on_success function returns a success status when the robot reaches the goal pose. 
+
 ### World
 
 Seeing how many problems gazebo and the code from pal robotics were giving we decided to do this project using Webots and the TurtleBot3 Burger. We also wanted to use the knowledge we have from other classes on this simulator so we built our own world:
