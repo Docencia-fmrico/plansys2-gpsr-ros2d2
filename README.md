@@ -39,7 +39,7 @@ The domain includes these durative actions:
 
 Each node has a counter programmed into its tick function that causes the node to continue returning the status RUNNING until it has been ticked 5 times. This simulates the duration of the action.
 
-**move_through_door**
+**Move_through_door**
 
 The MoveThroughDoor class inherits from plansys2::BtActionNode, which is a base class for Behavior Tree nodes that represent actions that can be executed by the robot. The constructor of the MoveThroughDoor class initializes some variables related to the waypoints that the robot needs to follow, as well as the door that needs to be opened to reach the final goal. These waypoints refer to locations near each door that are specifically designated for opening the door. These locations are unique to each door and cannot be found anywhere else.
 
