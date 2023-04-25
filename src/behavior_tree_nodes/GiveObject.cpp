@@ -40,7 +40,7 @@ GiveObject::tick()
 {
   std::string object;
   getInput<std::string>("object", object);
-  std::cout << "GiveObject tick " << counter_ << std::endl;
+  std::cout << "Giving object " << object << std::endl;
 
   if (counter_++ < 5) {
     return BT::NodeStatus::RUNNING;
