@@ -68,6 +68,12 @@ The on_tick() method returns RUNNING as long as the action is being executed. Wh
 
 The class is responsible for moving the robot to a specific location using the ROS Navigation2 stack. The Move class inherits from the BtActionNode class and is registered as a behavior tree node. The constructor initializes the Move class and retrieves the parameters for the waypoints. The on_tick function handles moving the robot to the specified goal by setting the goal pose and returning a running status. The on_success function returns a success status when the robot reaches the goal pose. 
 
+### GUI
+
+A refined control GUI has been developed to provide a more user-friendly command interface for the robot. This interface enables users to effortlessly add goals in an automated fashion and initiate the execution of their plans. This method eliminates the need to directly interact with the complex PlanSys2 interface.
+
+By employing the new control GUI, users gain direct access to task execution, while the technical aspects are efficiently managed by the enhanced interface. This streamlined process facilitates more effective goal setting and plan execution, ultimately empowering users to exert improved control over the robot system.
+
 ### World
 
 After careful consideration of the limitations posed by Gazebo and the code from Pal Robotics, we made the decision to switch to Webots and adopt the TurtleBot3 Burger for our project. This allowed us to leverage our existing knowledge and experience with the simulator, which we used to create a custom world tailored to our needs. Our aim was to maximize the capabilities of the platform and optimize our workflow, while also ensuring that we could achieve our project goals in a timely and efficient manner. Through this approach, we were able to overcome the challenges we faced and deliver a high-quality solution that met the project requirements:
