@@ -28,7 +28,7 @@ Seeing how many problems gazebo and the code from pal robotics were giving we de
 
 We also mapped it in order to navigate it:
 
-![alt text](https://github.com/Docencia-fmrico/plansys2-gpsr-ros2d2/blob/main/Media/big_house.png)
+![alt text](https://github.com/Docencia-fmrico/plansys2-gpsr-ros2d2/blob/main/Media/big_house_tags.png)
 
 In order to map it we followd the normal steps, but instead of launching gazebo we used this other package to launch the simulation:
 https://github.com/OscarMrZ/tb3_webots_minimal
