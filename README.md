@@ -119,6 +119,18 @@ To be able to analyze if our code is correct and runs as desired, we have create
 
 In order to check if a node does not fail, we create its behaviur tree, blackboard and run it a total of 5 times. If the NodeStatus is success at the end of the five runs, the test is passed.
 
+The reduced trees we create for each test follow the following model (for example, for OpenDoor):
+
+```
+  std::string xml_bt =
+    R"(
+    <root main_tree_to_execute = "MainTree" >
+      <BehaviorTree ID="MainTree">
+          <OpenDoor    name="open_door" door="${arg1}"/>
+      </BehaviorTree>
+    </root>)";
+```
+
 The following nodes have been subjectd to this test: close_door, open_door, pick, drop, request_opened, request_closed, give_object and arrange_object.
 
 ```
